@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Game Project Beta</title>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body onkeydown="keyDown(event)" onkeyUp="keyUp(event)">
+
+	<div id="canvas">
+	<canvas id="myCanvas">Canvas not supported</canvas>
+	</div>
+
+	<script>
+	//VARIABLES
+	var gameCanvas = document.getElementById("myCanvas");
+	var grafx = gameCanvas.getContext('2d');
+	var player = new Object("images/avatar.png", 100, 0, 32, 50);
+	var block = new Object("images/nakov.png", 100, 100 , 32, 44);
+	var isLeft = false;
+	var isRight = false;
+	player.Velocity_Y = 1;
+
+	//EVENTS
+	function keyDown(e) {
+		if (String.fromCharCode(e.keyCode) == "%") player.X -= 3;
+		if (String.fromCharCode(e.keyCode) == "'") player.X += 3;
+	}
+
+	//MAINLOOP
+	MainLoop();
+
+	function MainLoop() {
+	    //VARIABLES
+		player.X += player.Velocity_X;
+		player.Y += player.Velocity_Y;
+		//LOGIC
+		if (player.isColliding(block)) player.Velocity_Y = 0;
+		
+		//DRAW
+		grafx.clearRect(0,0,gameCanvas.width,gameCanvas.height);
+		grafx.drawImage(player.Sprite,player.X,player.Y,80,50);
+		grafx.drawImage(block.Sprite,block.X,block.Y,80,50);
+		setTimeout(MainLoop,1000/60);
+
+	}
+	function Object(img,x,y,width,height) {
+		this.Sprite = new Image();
+		this.Sprite.src = img;
+		this.X = x;
+		this.Y = y;
+		this.Width = width;
+		this.Height = height;
+		this.Previous_X;
+		this.Previous_Y;
+		this.Velocity_X = 0;
+		this.Velocity_Y = 0;
+
+		//COLLISION DETECTION
+		this.isColliding = function(obj) {
+			if (this.X > obj.X + obj.Width) return false;
+			if (this.X + this.Width < obj.X) return false;
+			if (this.Y > obj.Y + obj.Height) return false;
+			if (this.Y + this.Height < obj.Y) return false;
+			return true;
+		}
+	}
+</script>
+</body>
+</html>
