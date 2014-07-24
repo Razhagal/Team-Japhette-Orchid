@@ -101,7 +101,6 @@
         if (!e) {
             e = window.event;
         }
-
         switch (e.keyCode) {
             case 37:
                 player.moveSpeed = -6;
@@ -113,10 +112,23 @@
     });
 
     document.body.addEventListener('keyup', function (e) {
-        if (!e) {
+        if(!e){
             e = window.event;
         }
-        player.moveSpeed = 0;
+        switch(e.keyCode) {
+            case 37:{
+                if (player.moveSpeed == -6) {
+                    player.moveSpeed = 0;
+                }
+                break;
+            }
+            case 39: {
+                if (player.moveSpeed == 6) {
+                    player.moveSpeed = 0;
+                }
+                break;
+            }
+        }
     });
 
     function startGame() {
