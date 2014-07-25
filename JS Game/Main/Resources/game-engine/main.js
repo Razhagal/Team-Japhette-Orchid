@@ -1,4 +1,15 @@
-﻿window.onload = function () {
+﻿Math.signum = function(arg) {
+    if(arg > 0){
+        return 1;
+    } else if(arg < 0){
+        return -1;
+    } else if(arg === 0){
+        return 0;
+    }
+
+};
+
+window.onload = function () {
     var theCanvas = document.getElementById('field');
     var canvasCtx = theCanvas.getContext('2d');
     
@@ -49,20 +60,19 @@
 
         this.draw = function (canvasCtx) {
             canvasCtx.beginPath();
-            canvasCtx.arc(this.cX, this.cY, this.rad, 0, 2 * Math.PI);
-            canvasCtx.fill();
-            canvasCtx.stroke();
+            canvasCtx.arc(this.cX, this.cY, this.rad, 0, 2 * Math.PI); // Makes Arc of 2*pi = Circle
+            canvasCtx.fill(); // Fills it
+            canvasCtx.stroke(); // Adds the black outline
         };
 
         this.move = function () {
-            this.cX += this.moveSpeedX;
-            this.cY += this.moveSpeedY;
-
-            this.checkCollision();
+            this.cX += this.moveSpeedX; // removed switch, instead just set movespeed variable to negative.
+            this.cY += this.moveSpeedY; // removed switch, instead just set movespeed variable to negative.
+            this.checkCollision(); // checks if the ball collides with anything
         };
 
         this.checkCollision = function () {
-            this.rightBorder = this.cX + this.rad;
+            this.rightBorder = this.cX + this.rad; 
             this.leftBorder = this.cX - this.rad;
             this.topBorder = this.cY - this.rad;
             this.bottomBorder = this.cY + this.rad;
@@ -73,20 +83,23 @@
             } else if (this.rightBorder >= theCanvas.width) {
                 this.moveSpeedX = -this.moveSpeedX; //sets variable to move left
             }
-
+            /*Bug : Sometimes the ball goes too fast , we should probably set a limit of atleast MS = 2 for X and Y.*/
+            /*Bug : Somethimes the ball can go fast enough as to exit the boundaries of the level, leaving it glitched*/
             if (this.topBorder <= 0) {
                 this.moveSpeedY = -this.moveSpeedY; // sets variable to move down 
             } else if (this.cX >= player.x &&
                 this.cX <= (player.x + player.width) &&
                 this.bottomBorder >= player.y &&
                 this.bottomBorder <= player.y + player.height) {
-                    this.moveSpeedX = this.mainSpeed *-2*(1 - ((this.cX-player.x)/(player.width/2)));
-                    this.moveSpeedY = -this.mainSpeed *2*(1 - Math.abs(1 - ((this.cX-player.x)/(player.width/2))));// player flipper code
-                    console.log(this.moveSpeedX);
-                    console.log(this.moveSpeedY);
+                    this.moveSpeedX = this.mainSpeed *-2*(1 - ((this.cX-player.x)/(player.width/2))); //The values for X and Y movespeed are reciproc and equal 2* movespeed. This chooses direction dynamically.
+                    this.moveSpeedY = -this.mainSpeed *2*(1 - Math.abs(1 - ((this.cX-player.x)/(player.width/2))));// player movement
+                    if (Math.abs(this.moveSpeedX) > this.mainSpeed*1.5) {
+                        this.moveSpeedX = this.mainSpeed*1.5*Math.signum(this.moveSpeedX);
+                        this.moveSpeedY = this.mainSpeed*0.5*Math.signum(this.moveSpeedY);
+                    }
             } else if (this.bottomBorder >= theCanvas.height) {
                 player.lives -= 1;
-                ball = new Ball(player.x + (player.width / 2), (player.y - 7), 7, 6, 'left', 'up');
+                ball = new Ball(player.x + (player.width / 2), (player.y - 7), 7, 6, 'left', 'up'); // Replaces ball that spawns at player location when it's destroyed.
             }
         };
 
@@ -121,12 +134,12 @@
 
         switch (e.keyCode) {
             case 37:
-                if (player.moveSpeed === (player.currentSpeed * -1)) { // Checks if the correct key is pressed. 
+                if (player.moveSpeed === (player.currentSpeed * -1)) { // Checks if the correct key is pressed. Else Has issues when player button mashes.
                     player.moveSpeed = 0;
                 }
                 break;
             case 39:
-                if (player.moveSpeed === player.currentSpeed) { // Checks if the correct key is pressed. 
+                if (player.moveSpeed === player.currentSpeed) { // Checks if the correct key is pressed. Else Has issues when player button mashes.
                     player.moveSpeed = 0;
                 }
                 break;
