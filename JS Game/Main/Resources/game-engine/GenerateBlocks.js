@@ -2,7 +2,6 @@ var reader = new XMLHttpRequest() || new ActiveXObject('MSXML2.XMLHTTP');
 
 function loadFile() {
     reader.open('get', 'Resources/game-engine/test.txt', true);
-    reader.onreadystatechange = generateBlocks;
     reader.send(null);
 }
 
@@ -37,6 +36,3 @@ function generateBlocks() {
         //\u000A
     }
 }
-window.onload = function () {
-    loadFile();
-};

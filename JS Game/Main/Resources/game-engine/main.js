@@ -10,9 +10,10 @@
 };
 
 window.onload = function () {
+    loadFile();
     var theCanvas = document.getElementById('field');
     var canvasCtx = theCanvas.getContext('2d');
-    
+
     canvasCtx.fillStyle = 'red';
     canvasCtx.strokeStyle = 'black';
 
@@ -29,6 +30,7 @@ window.onload = function () {
         this.draw = function (canvasCtx) {
             canvasCtx.beginPath();
             canvasCtx.moveTo(this.x, this.y);
+            canvasCtx.fillStyle = "#FF0000";
             canvasCtx.rect(this.x, this.y, this.width, this.height);
             canvasCtx.fill();
             canvasCtx.lineWidth = 2;
@@ -155,9 +157,8 @@ window.onload = function () {
 
         ball.draw(canvasCtx);
         ball.move();
-
         requestAnimationFrame(startGame);
+        generateBlocks();
     }
-
     requestAnimationFrame(startGame);
 };
