@@ -11,7 +11,7 @@
         this.width = width;
         this.height = height;
         this.moveSpeed = 0;
-        this.currentSpeed = 6; //some workaround for smooth animation with some initial value
+        this.currentSpeed = 12; //some workaround for smooth animation with some initial value
         this.lives = lives;
         this.image; //when we include graphix
 
@@ -41,6 +41,7 @@
         this.cX = cX;
         this.cY = cY;
         this.rad = rad;
+        this.mainSpeed = moveSpeed;
         this.moveSpeedX = moveSpeed;
         this.moveSpeedY = moveSpeed;
         this.directionX = directionX;
@@ -54,26 +55,8 @@
         };
 
         this.move = function () {
-            this.moveDirection = this.directionX + '-' + this.directionY;
-
-            switch (this.moveDirection) {
-                case 'left-down':
-                    this.cX -= this.moveSpeedX;
-                    this.cY += this.moveSpeedY;
-                    break;
-                case 'right-down':
-                    this.cX += this.moveSpeedX;
-                    this.cY += this.moveSpeedY;
-                    break;
-                case 'left-up':
-                    this.cX -= this.moveSpeedX;
-                    this.cY -= this.moveSpeedY;
-                    break;
-                case 'right-up':
-                    this.cX += this.moveSpeedX;
-                    this.cY -= this.moveSpeedY;
-                    break;
-            }
+            this.cX += this.moveSpeedX;
+            this.cY += this.moveSpeedY;
 
             this.checkCollision();
         };
@@ -86,18 +69,21 @@
 
             //playfield border and envelope collision checks
             if (this.leftBorder <= 0) {
-                this.directionX = 'right';
+                this.moveSpeedX = -this.moveSpeedX; // sets variable to move right
             } else if (this.rightBorder >= theCanvas.width) {
-                this.directionX = 'left';
+                this.moveSpeedX = -this.moveSpeedX; //sets variable to move left
             }
 
             if (this.topBorder <= 0) {
-                this.directionY = 'down';
+                this.moveSpeedY = -this.moveSpeedY; // sets variable to move down 
             } else if (this.cX >= player.x &&
                 this.cX <= (player.x + player.width) &&
                 this.bottomBorder >= player.y &&
                 this.bottomBorder <= player.y + player.height) {
-                this.directionY = 'up';
+                    this.moveSpeedX = this.mainSpeed *-2*(1 - ((this.cX-player.x)/(player.width/2)));
+                    this.moveSpeedY = -this.mainSpeed *2*(1 - Math.abs(1 - ((this.cX-player.x)/(player.width/2))));// player flipper code
+                    console.log(this.moveSpeedX);
+                    console.log(this.moveSpeedY);
             } else if (this.bottomBorder >= theCanvas.height) {
                 player.lives -= 1;
                 ball = new Ball(player.x + (player.width / 2), (player.y - 7), 7, 6, 'left', 'up');
@@ -110,17 +96,19 @@
     var player = new Envelope(300, 400, 150, 20, 3);
     var ball = new Ball(player.x + (player.width / 2), (player.y - 7), 7, 6, 'left', 'up');
 
+
+    //Player Controls Block
     document.body.addEventListener('keydown', function (e) {
         if (!e) {
             e = window.event;
         }
 
         switch (e.keyCode) {
-            case 37:
-                player.moveSpeed = (player.currentSpeed * -1);
+            case 37: // Left
+                player.moveSpeed = (player.currentSpeed * -1); //Sets Player Speed
                 break;
-            case 39:
-                player.moveSpeed = player.currentSpeed;
+            case 39: // Right
+                player.moveSpeed = player.currentSpeed; //Sets Player Speed
                 break;
         }
 
@@ -133,18 +121,19 @@
 
         switch (e.keyCode) {
             case 37:
-                if (player.moveSpeed === (player.currentSpeed * -1)) {
+                if (player.moveSpeed === (player.currentSpeed * -1)) { // Checks if the correct key is pressed. 
                     player.moveSpeed = 0;
                 }
                 break;
             case 39:
-                if (player.moveSpeed === player.currentSpeed) {
+                if (player.moveSpeed === player.currentSpeed) { // Checks if the correct key is pressed. 
                     player.moveSpeed = 0;
                 }
                 break;
         }
     });
 
+    //Game Loop
     function startGame() {
         canvasCtx.clearRect(0, 0, theCanvas.width, theCanvas.height);
 
