@@ -1,17 +1,5 @@
---- -- --- -----
- -  -  -    -
- -  -- ---  -
- -  -    -  -
- -  -- ---  -
--
--
--
--
--
--
--
--
--
--
--
--
+ nnn nnn nnn nnn
+  t  t   t    t
+  d  ddd ddd  d
+  t  t     t  t
+  n  nnn nnn  n

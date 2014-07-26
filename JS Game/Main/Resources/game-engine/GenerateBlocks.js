@@ -1,22 +1,22 @@
- 
 var reader = new XMLHttpRequest();
-
+var field;
 function loadFile() {
     reader.open('get', 'Resources/game-engine/test.txt', true);
     reader.send(null);
 }
+loadFile();
 
 function generateBlocks() {
     var c = document.getElementById("field");
     var ctx = c.getContext("2d");
     var blox = [];
-        var field = reader.responseText;
         if (field == ""){
             field = "\n nnn nnn nnn nnn\n  t  t   t    t \n  d  ddd ddd  d \n  t  t     t  t \n  n  nnn nnn  n ";
         }
         var width = 0;
         var height = 0;
         for(letter in field) {
+            //console.log(field[letter]);
             if (field[letter] == "n") {
                 blox.push(new Block("n", width, height,c));
                 width+= c.width/18;

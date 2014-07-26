@@ -8,20 +8,27 @@
     }
 };
 window.onload = function() {
-    loadFile();
     var theCanvas = document.getElementById('field');
     theCanvas.height = window.innerHeight - 20;
     theCanvas.width = (theCanvas.height);
     var canvasCtx = theCanvas.getContext('2d');
     canvasCtx.fillStyle = 'red';
     canvasCtx.strokeStyle = 'black';
-
-    //initialize player envelope and ball
-    var balls = [];
-    var blocks = generateBlocks();
-    var player = new Envelope(theCanvas.width / 2, theCanvas.height - 100, 3, theCanvas);
-    balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas));
-
+    var balls;
+    var blocks;
+    var player;
+    reader.onreadystatechange = function () {
+        if (reader.readyState==4) {
+            field = reader.responseText;
+            //console.log(reader.responseText);
+            //initialize player envelope and ball
+            balls = [];
+            blocks = generateBlocks();
+            player = new Envelope(theCanvas.width / 2, theCanvas.height - 100, 3, theCanvas);
+            balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas));
+            startGame();
+        }
+    }
 
 function Ball(cX, cY, rad, theCanvas) {
     this.cX = cX;
@@ -147,8 +154,6 @@ function Ball(cX, cY, rad, theCanvas) {
     }
     requestAnimationFrame(startGame);
 }
-
-startGame();
 };
 
 function Envelope(x, y, lives, theCanvas) {
