@@ -12,18 +12,21 @@
 window.onload = function () {
     loadFile();
     var theCanvas = document.getElementById('field');
+    theCanvas.height = window.innerHeight-20;
+    theCanvas.width = (theCanvas.height);
     var canvasCtx = theCanvas.getContext('2d');
 
     canvasCtx.fillStyle = 'red';
     canvasCtx.strokeStyle = 'black';
 
-    function Envelope(x, y, width, height, lives) {
+    function Envelope(x, y, lives) {
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
+        this.width = theCanvas.width/8;
+        this.height = 25;
         this.moveSpeed = 0;
-        this.currentSpeed = 12; //some workaround for smooth animation with some initial value
+        this.currentSpeed = ((theCanvas.width+theCanvas.height)/120); //some workaround for smooth animation with some initial value
+        this.sticky = true;
         this.lives = lives;
         this.image; //when we include graphix
 
@@ -49,17 +52,55 @@ window.onload = function () {
         };
 
     }
+    function Block(kind, x, y){
+        this.init = function() {
+            this.height = canvasCtx.canvas.clientHeight/20;
+            this.width = canvasCtx.canvas.clientWidth/18;
+            switch(kind){
+                case "n":{ //Normal block
+                    this.health = 1;  // Hits Required for kill
+                    this.fillColor = "#000000"; //Color
+                    this.hittable = true; // 
+                    this.powerUP = 0.01;
+                    break;
+                }
+                case "p":{ // PowerUP dropper
+                    this.health = 1;
+                    this.hittable = true;
+                    this.fillColor = "#00ff99";
+                    this.powerUP = 1;
+                    break;
+                }
+                case "d":{ // Double hit block
+                    this.health = 2;
+                    this.hittable = true;
+                    this.fillColor = "#FADE00";
+                    this.powerUP = 0.02;
+                    break;
+                }
+                case "t":{ // Triple hit block
+                    this.health = 3;
+                    this.hittable = true;
+                    this.powerUP = 0.05;
+                    this.fillColor = "#DA9900";
+                    break;
+                }
+            }
+            this.draw = function() {
 
-    function Ball(cX, cY, rad, moveSpeed, directionX, directionY) {
+                canvasCtx.fillStyle = this.fillColor;
+                canvasCtx.rect(this.x, this.y, this.width, this.height);
+                canvasCtx.fill();
+            };
+        };
+    }
+    function Ball(cX, cY, rad) {
         this.cX = cX;
         this.cY = cY;
         this.rad = rad;
-        this.mainSpeed = moveSpeed;
-        this.moveSpeedX = moveSpeed;
-        this.moveSpeedY = moveSpeed;
-        this.directionX = directionX;
-        this.directionY = directionY;
-
+        this.mainSpeed = (theCanvas.height+theCanvas.width)/(120*2);
+        this.moveSpeedX = this.mainSpeed;
+        this.moveSpeedY = this.mainSpeed;
         this.draw = function (canvasCtx) {
             canvasCtx.beginPath();
             canvasCtx.arc(this.cX, this.cY, this.rad, 0, 2 * Math.PI); // Makes Arc of 2*pi = Circle
@@ -93,23 +134,50 @@ window.onload = function () {
                 this.cX <= (player.x + player.width) &&
                 this.bottomBorder >= player.y &&
                 this.bottomBorder <= player.y + player.height) {
-                    this.moveSpeedX = this.mainSpeed *-2*(1 - ((this.cX-player.x)/(player.width/2))); //The values for X and Y movespeed are reciproc and equal 2* movespeed. This chooses direction dynamically.
-                    this.moveSpeedY = -this.mainSpeed *2*(1 - Math.abs(1 - ((this.cX-player.x)/(player.width/2))));// player movement
-                    if (Math.abs(this.moveSpeedX) > this.mainSpeed*1.5) {
-                        this.moveSpeedX = this.mainSpeed*1.5*Math.signum(this.moveSpeedX);
-                        this.moveSpeedY = this.mainSpeed*0.5*Math.signum(this.moveSpeedY);
+                    if (player.sticky) {
+                        if (player.x >= 0 && player.x + player.width <= theCanvas.width) {
+                            this.moveSpeedX = player.moveSpeed;
+                            this.moveSpeedY = 0;
+                        }else{
+                            this.moveSpeedX = 0;
+                            this.moveSpeedY = 0;
+                        }
+                    }else{
+                        this.moveSpeedX = this.mainSpeed *-2*(1 - ((this.cX-player.x)/(player.width/2))); //The values for X and Y movespeed are reciproc and equal 2* movespeed. This chooses direction dynamically.
+                        this.moveSpeedY = -this.mainSpeed *2*(1 - Math.abs(1 - ((this.cX-player.x)/(player.width/2))));// player movement
+                        if (Math.abs(this.moveSpeedX) > this.mainSpeed*1.5) {
+                            this.moveSpeedX = this.mainSpeed*1.5*Math.signum(this.moveSpeedX);
+                            this.moveSpeedY = this.mainSpeed*0.5*Math.signum(this.moveSpeedY);
+                        }
                     }
-            } else if (this.bottomBorder >= theCanvas.height) {
-                player.lives -= 1;
-                ball = new Ball(player.x + (player.width / 2), (player.y - 7), 7, 6, 'left', 'up'); // Replaces ball that spawns at player location when it's destroyed.
+            }
+            else if (this.bottomBorder >= theCanvas.height) {
+                if (balls.length > 1) {
+                    var newBalls = [];
+                    for(var i = 0; i < balls.length; i++){
+                        if(balls[i].bottomBorder <= theCanvas.height){
+                            newBalls.push(balls[i]);
+                        }
+                    }
+                    balls = newBalls;
+                }else{
+                    player.lives -= 1;  
+                    player.sticky = true;
+                    balls.push(new Ball(player.x + (player.width / 2) - this.rad, (player.y - 7), 7)); // Replaces ball that spawns at player location when it's destroyed.
+                }
             }
         };
 
     }
 
     //initialize player envelope and ball
-    var player = new Envelope(300, 400, 150, 20, 3);
-    var ball = new Ball(player.x + (player.width / 2), (player.y - 7), 7, 6, 'left', 'up');
+
+    var balls = [];
+    var blocks = [];
+    var player = new Envelope(theCanvas.width/2, theCanvas.height-100, 3);
+    balls.push(new Ball(player.x + (player.width / 2)-7, (player.y - 7), 7));
+
+
 
 
     //Player Controls Block
@@ -125,6 +193,18 @@ window.onload = function () {
             case 39: // Right
                 player.moveSpeed = player.currentSpeed; //Sets Player Speed
                 break;
+            case 32, 38:/*space*/ {
+                if (player.sticky) {
+                    player.sticky = 0;
+                    for(var b in balls){
+                        if (b.moveSpeedX == 0 && b.moveSpeedY == 0) {
+                            b.moveSpeedY = -6;
+                        }
+                    }
+                }
+                
+                break;
+            }
         }
 
     });
@@ -155,8 +235,10 @@ window.onload = function () {
         player.draw(canvasCtx);
         player.move();
 
-        ball.draw(canvasCtx);
-        ball.move();
+        for (var i = 0; i < balls.length ; i++){
+            balls[i].draw(canvasCtx);
+            balls[i].move();
+        }
         requestAnimationFrame(startGame);
         generateBlocks();
     }

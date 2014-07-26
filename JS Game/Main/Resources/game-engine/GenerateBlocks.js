@@ -16,11 +16,17 @@ function generateBlocks() {
         var width = 0;
         var height = 0;
         for(letter in field) {
-            if (field[letter] == '-') {
-                //Current char is a dash
-                ctx.fillStyle = "#252525";
-                ctx.fillRect(width, height, 50, 20);
-                width += 51;
+            if (field[letter] == "n") {
+                blocks.push(new Block("n", width, height));
+            }
+            else if (field[letter] == "p"){ //PowerUp
+                blocks.push(new Block("p", width, height));
+            }
+            else if (field[letter] == "d"){ //Double
+                blocks.push(new Block("d", width, height));
+            }
+            else if (field[letter] == "t"){ //Triple
+                blocks.push(new Block("t", width, height));
             }
             else if (field[letter] == '\u0020') {
                 //Current char is a blank space
