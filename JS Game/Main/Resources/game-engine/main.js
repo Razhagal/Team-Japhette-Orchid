@@ -12,18 +12,20 @@
 window.onload = function () {
     loadFile();
     var theCanvas = document.getElementById('field');
+    theCanvas.height = window.innerHeight-20;
+    theCanvas.width = (theCanvas.height);
     var canvasCtx = theCanvas.getContext('2d');
 
     canvasCtx.fillStyle = 'red';
     canvasCtx.strokeStyle = 'black';
 
-    function Envelope(x, y, width, height, lives) {
+    function Envelope(x, y, lives) {
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
+        this.width = theCanvas.width/8;
+        this.height = 25;
         this.moveSpeed = 0;
-        this.currentSpeed = 12; //some workaround for smooth animation with some initial value
+        this.currentSpeed = ((theCanvas.width+theCanvas.height)/120); //some workaround for smooth animation with some initial value
         this.sticky = true;
         this.lives = lives;
         this.image; //when we include graphix
@@ -92,16 +94,13 @@ window.onload = function () {
             };
         };
     }
-    function Ball(cX, cY, rad, moveSpeed, directionX, directionY) {
+    function Ball(cX, cY, rad) {
         this.cX = cX;
         this.cY = cY;
         this.rad = rad;
-        this.mainSpeed = moveSpeed;
-        this.moveSpeedX = moveSpeed;
-        this.moveSpeedY = moveSpeed;
-        this.directionX = directionX;
-        this.directionY = directionY;
-
+        this.mainSpeed = (theCanvas.height+theCanvas.width)/(120*2);
+        this.moveSpeedX = this.mainSpeed;
+        this.moveSpeedY = this.mainSpeed;
         this.draw = function (canvasCtx) {
             canvasCtx.beginPath();
             canvasCtx.arc(this.cX, this.cY, this.rad, 0, 2 * Math.PI); // Makes Arc of 2*pi = Circle
@@ -164,7 +163,7 @@ window.onload = function () {
                 }else{
                     player.lives -= 1;  
                     player.sticky = true;
-                    balls.push(new Ball(player.x + (player.width / 2), (player.y - 7), 7, 6, 'left', 'up')); // Replaces ball that spawns at player location when it's destroyed.
+                    balls.push(new Ball(player.x + (player.width / 2) - this.rad, (player.y - 7), 7)); // Replaces ball that spawns at player location when it's destroyed.
                 }
             }
         };
@@ -175,8 +174,8 @@ window.onload = function () {
 
     var balls = [];
     var blocks = [];
-    var player = new Envelope(300, 400, 150, 20, 3);
-    balls.push(new Ball(player.x + (player.width / 2), (player.y - 7), 7, 6, 'left', 'up'));
+    var player = new Envelope(theCanvas.width/2, theCanvas.height-100, 3);
+    balls.push(new Ball(player.x + (player.width / 2)-7, (player.y - 7), 7));
 
 
 
