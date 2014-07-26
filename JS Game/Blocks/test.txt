@@ -1,5 +1,5 @@
---- -- --- ---
- -  -  -    -
- -  -- ---  -
- -  -    -  -
- -  -- ---  -
+nnn nn nnn nnn
+ t  t  t    t
+ d  dd ddd  d
+ t  t    t  t
+ n  nn nnn  n
