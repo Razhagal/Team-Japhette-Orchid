@@ -1,50 +1,70 @@
 var reader = new XMLHttpRequest();
 var field;
+
 function loadFile() {
     reader.open('get', 'Resources/game-engine/test.txt', true);
     reader.send(null);
 }
+
 loadFile();
 
 function generateBlocks() {
-    var c = document.getElementById("field");
-    var ctx = c.getContext("2d");
-    var blox = [];
-        if (field == ""){
-            field = "\n nnn nnn nnn nnn\n  t  t   t    t \n  d  ddd ddd  d \n  t  t     t  t \n  n  nnn nnn  n ";
-        }
-        var width = 0;
-        var height = 0;
-        for(letter in field) {
-            //console.log(field[letter]);
-            if (field[letter] == "n") {
-                blox.push(new Block("n", width, height,c));
-                width+= c.width/18;
-            }
-            else if (field[letter] == "p"){ //PowerUp
-                blox.push(new Block("p", width, height,c));
-                width+= c.width/18;
-            }
-            else if (field[letter] == "d"){ //Double
-                blox.push(new Block("d", width, height,c));
-                width+= c.width/18;
-            }
-            else if (field[letter] == "t"){ //Triple
-                blox.push(new Block("t", width, height,c));
+    var canvas = document.getElementById('field'),
+        ctx = canvas.getContext('2d'),
+        blox = [],
+        firstQuad = [],
+        secondQuad = [],
+        thirdQuad = [],
+        tmpBlock;
 
-                width+= c.width/18;
-            }
-            else if (field[letter] == '\u0020') {
-                //Current char is a blank space
-                width+= c.width/18;
-            }
-            else if (field[letter] == '\u000A') {
-                //Current char is a new line
-                width = 0;
-                height += c.height/24;
-            }
-        //\u0020
-        //\u000A
+    if (field === '') {
+        field = '\n nnn nnn nnn nnn\n  t  t   t    t \n  d  ddd ddd  d \n  t  t     t  t \n  n  nnn nnn  n ';
     }
+
+    var width = 0,
+        height = 0;
+
+    for (var letter in field) {
+        //console.log(field[letter]);
+        if (field[letter] === 'n') {
+            tmpBlock = new Block('n', width, height, canvas);
+            width += canvas.width / 18;
+        } else if (field[letter] === 'p') {  //PowerUp
+            tmpBlock = new Block('p', width, height, canvas);
+            width += canvas.width / 18;
+        } else if (field[letter] === 'd') {  //Double
+            tmpBlock = new Block('d', width, height, canvas);
+            width += canvas.width / 18;
+        } else if (field[letter] === 't') {  //Triple
+            tmpBlock = new Block('t', width, height, canvas);
+            width += canvas.width / 18;
+        } else if (field[letter] === '\u0020') {
+            //Current char is a blank space
+            width += canvas.width / 18;
+            continue;
+        } else if (field[letter] === '\u000A') {
+            //Current char is a new line
+            width = 0;
+            height += canvas.height / 30;
+            continue;
+        }
+
+        if (width < canvas.width / 6) {
+            firstQuad.push(tmpBlock);
+        } else if (width >= canvas.width / 6 && width < canvas.width - (canvas.width / 6)) {
+            secondQuad.push(tmpBlock);
+        } else if (width >= canvas.width - (canvas.width / 6)) {
+            thirdQuad.push(tmpBlock);
+        }
+
+    //\u0020
+    //\u000A
+    }
+
+    blox.push(firstQuad);
+    blox.push(secondQuad);
+    blox.push(thirdQuad);
+    blox.push(height); //smuggle the blocks bottom border coordinates value out to main.js
+
     return blox;
 }
