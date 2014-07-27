@@ -38,7 +38,9 @@ window.onload = function() {
 
             player = new Envelope(theCanvas.width / 2, theCanvas.height - 100, 3, theCanvas);
             balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas));
-            console.log(blocks[2]);
+            //console.log(blocks[0].length);
+            //console.log(blocks[1]);
+            //console.log(blocks[2].length);
             startGame();
         }
     };
@@ -49,7 +51,8 @@ window.onload = function() {
         this.cX = cX;
         this.cY = cY;
         this.rad = rad;
-        this.mainSpeed = (theCanvas.height + theCanvas.width) / (120 * 2);
+        //this.mainSpeed = (theCanvas.height + theCanvas.width) / (120 * 2);
+        this.mainSpeed = 4;
         this.moveSpeedX = this.mainSpeed;
         this.moveSpeedY = this.mainSpeed;
 
@@ -130,31 +133,54 @@ window.onload = function() {
             this.bottomBorder = this.cY + this.rad;
             var currentBlock,
                 currentBlockRightBorder,
-                currentBlockBottomBorder;
+                currentBlockBottomBorder,
+                index = -1;
 
-            if (this.topBorder <= 100) {
-                if (this.leftBorder < theCanvas.width / 6) { //No need to check right border since this is the left-most quadrant
+            if (this.topBorder <= blocksFieldHeight) {
+                if (this.cX <= theCanvas.width / 3) { //first quadrant check
                     for (var b in blocks[0]) { //blocks[0] == first quadrant
                         currentBlock = blocks[0][b];
                         currentBlockRightBorder = currentBlock.x + currentBlock.width;
                         currentBlockBottomBorder = currentBlock.y + currentBlock.height;
+                        
+                        if (this.topBorder <= currentBlockBottomBorder &&
+                            this.topBorder >= currentBlock.y &&
+                            this.cX >= currentBlock.x &&
+                            this.cX <= currentBlockRightBorder) { //hit from bellow
+                            this.moveSpeedY = -this.moveSpeedY;
+                        } else if (this.bottomBorder >= currentBlock.y &&
+                                   this.bottomBorder <= currentBlockBottomBorder &&
+                                   this.cX >= currentBlock.x &&
+                                   this.cX <= currentBlockRightBorder) { //hit from top
+                            this.moveSpeedY = -this.moveSpeedY;
+                            console.log(currentBlock);
 
-                        console.log(currentBlock);
-
-                        if (this.rightBorder >= currentBlock.x && this.cX < currentBlock.x) { //left side only
-                            this.moveSpeedX = -1 * this.moveSpeedX;
-                        } else if (this.leftBorder <= currentBlockRightBorder && this.cX > currentBlockRightBorder) { //right side only
-                            this.moveSpeedX = -1 * this.moveSpeedX;
+                        } else if (this.rightBorder >= currentBlock.x &&
+                                   this.rightBorder <= currentBlockRightBorder &&
+                                   this.cY >= currentBlock.y &&
+                                   this.cY <= currentBlockBottomBorder) { //hit from left
+                            this.moveSpeedX = -this.moveSpeedX;
+                        } else if (this.leftBorder <= currentBlockRightBorder &&
+                                   this.leftBorder >= currentBlock.x &&
+                                   this.cY >= currentBlock.y &&
+                                   this.cY <= currentBlockBottomBorder) { //hit from right
+                            this.moveSpeedX = -this.moveSpeedX;
                         }
+                        //else if (this.leftBorder >= currentBlock.x && this.leftBorder <= currentBlockRightBorder &&
+                        //           this.topBorder >= currentBlock.y && this.topBorder <= currentBlockBottomBorder &&
+                        //           this.cX > currentBlockRightBorder && this.cY > currentBlockBottomBorder) { //bottom-right corner hit
 
-                        if (this.topBorder <= currentBlockBottomBorder && this.cY > currentBlockBottomBorder) { //top side only
-                            this.moveSpeedY = -1 * this.moveSpeedY;
-                        } else if (this.bottomBorder >= currentBlock.y && this.cY < currentBlock.y) { //bottom side only
-                            this.moveSpeedY = -1 * this.moveSpeedY;
-                        }
+                        //}
+
+
+                        
                     }
+
+                    //if (index >= 0) {
+                    //    blocks[0].splice(index, 1);
+                    //}
                 }
-                //else if (this.rightBorder >= theCanvas.width / 6 && this.leftBorder < theCanvas.width - (theCanvas.width / 6)) {
+                //else if (this.rightBorder >= theCanvas.width / 3 && this.leftBorder < theCanvas.width - (theCanvas.width / 3)) {
                 //    for (var b in blocks[1]) { //blocks[1] == second quadrant
 
                 //    }
@@ -307,7 +333,7 @@ function Block(type, x, y, theCanvas) {
         canvasCtx.fillStyle = this.fillColor;
         canvasCtx.rect(this.x, this.y, this.width, this.height);
         canvasCtx.fill();
-        canvasCtx.lineWidth = 2;
+        //canvasCtx.lineWidth = 2;
         canvasCtx.stroke();
     };
 
