@@ -134,61 +134,131 @@ window.onload = function() {
             var currentBlock,
                 currentBlockRightBorder,
                 currentBlockBottomBorder,
-                index = -1;
+                index = -1,
+                blockHit = false;
 
             if (this.topBorder <= blocksFieldHeight) {
-                if (this.cX <= theCanvas.width / 3) { //first quadrant check
+                if (this.leftBorder <= theCanvas.width / 3) { //first quadrant check
                     for (var b in blocks[0]) { //blocks[0] == first quadrant
                         currentBlock = blocks[0][b];
                         currentBlockRightBorder = currentBlock.x + currentBlock.width;
                         currentBlockBottomBorder = currentBlock.y + currentBlock.height;
                         
-                        if (this.topBorder <= currentBlockBottomBorder &&
-                            this.topBorder >= currentBlock.y &&
-                            this.cX >= currentBlock.x &&
-                            this.cX <= currentBlockRightBorder) { //hit from bellow
-                            this.moveSpeedY = -this.moveSpeedY;
-                        } else if (this.bottomBorder >= currentBlock.y &&
-                                   this.bottomBorder <= currentBlockBottomBorder &&
-                                   this.cX >= currentBlock.x &&
-                                   this.cX <= currentBlockRightBorder) { //hit from top
-                            this.moveSpeedY = -this.moveSpeedY;
-                            console.log(currentBlock);
-
-                        } else if (this.rightBorder >= currentBlock.x &&
-                                   this.rightBorder <= currentBlockRightBorder &&
-                                   this.cY >= currentBlock.y &&
-                                   this.cY <= currentBlockBottomBorder) { //hit from left
-                            this.moveSpeedX = -this.moveSpeedX;
-                        } else if (this.leftBorder <= currentBlockRightBorder &&
-                                   this.leftBorder >= currentBlock.x &&
-                                   this.cY >= currentBlock.y &&
-                                   this.cY <= currentBlockBottomBorder) { //hit from right
-                            this.moveSpeedX = -this.moveSpeedX;
+                        blockHit = this.changeDirections(currentBlock, currentBlockBottomBorder, currentBlockRightBorder);
+                        
+                        if (blockHit) {
+                            currentBlock.hardness -= 1;
+                            index = b;
+                            blockHit = false;
                         }
-                        //else if (this.leftBorder >= currentBlock.x && this.leftBorder <= currentBlockRightBorder &&
-                        //           this.topBorder >= currentBlock.y && this.topBorder <= currentBlockBottomBorder &&
-                        //           this.cX > currentBlockRightBorder && this.cY > currentBlockBottomBorder) { //bottom-right corner hit
+                        //else if (this.leftBorder > currentBlock.x && this.leftBorder < currentBlockRightBorder &&
+                        //           this.topBorder > currentBlock.y && this.topBorder < currentBlockBottomBorder &&
+                        //           this.cX >= currentBlockRightBorder && this.cY >= currentBlockBottomBorder) { //bottom-right corner hit
+                        //    this.moveSpeedX = -this.moveSpeedX;
+                        //    this.moveSpeedY = -this.moveSpeedY;
+                        //    console.log('vleze dolu dqsno');
+                        //} else if (this.rightBorder > currentBlock.x && this.rightBorder < currentBlockRightBorder &&
+                        //           this.topBorder > currentBlock.y && this.topBorder < currentBlockBottomBorder &&
+                        //           this.cX <= currentBlock.x && this.cY >= currentBlockBottomBorder) { //bottom-left corner hit
+                        //    this.moveSpeedX = -this.moveSpeedX;
+                        //    this.moveSpeedY = -this.moveSpeedY;
+                        //    console.log('vleze dolu levo');
+
+                        //} else if (this.leftBorder > currentBlock.x && this.leftBorder < currentBlockRightBorder &&
+                        //           this.bottomBorder > currentBlock.y && this.bottomBorder < currentBlockBottomBorder &&
+                        //           this.cX >= currentBlockRightBorder && this.cY <= currentBlock.y) { //top-right corner hit
+                        //    this.moveSpeedX = -this.moveSpeedX;
+                        //    this.moveSpeedY = -this.moveSpeedY;
+                        //    console.log('vleze gore dqsno');
+
+                        //} else if (this.rightBorder > currentBlock.x && this.rightBorder < currentBlockRightBorder &&
+                        //           this.bottomBorder > currentBlock.y && this.bottomBorder < currentBlockBottomBorder &&
+                        //           this.cX <= currentBlock.x && this.cY <= currentBlock.y) { //top-left corner hit
+                        //    this.moveSpeedX = -this.moveSpeedX;
+                        //    this.moveSpeedY = -this.moveSpeedY;
+                        //    console.log('vleze gore levo');
 
                         //}
 
-
-                        
                     }
 
-                    //if (index >= 0) {
-                    //    blocks[0].splice(index, 1);
-                    //}
+                    if (index >= 0) {
+                        if (blocks[0][index].hardness <= 0) {
+                            blocks[0][index].destroy(blocks[0], index);
+                        }
+                    }
                 }
-                //else if (this.rightBorder >= theCanvas.width / 3 && this.leftBorder < theCanvas.width - (theCanvas.width / 3)) {
-                //    for (var b in blocks[1]) { //blocks[1] == second quadrant
+                if (this.rightBorder > theCanvas.width / 3 && this.leftBorder <= theCanvas.width - (theCanvas.width / 3)) {
+                    for (var b in blocks[1]) { //blocks[1] == second quadrant
+                        currentBlock = blocks[1][b];
+                        currentBlockRightBorder = currentBlock.x + currentBlock.width;
+                        currentBlockBottomBorder = currentBlock.y + currentBlock.height;
 
-                //    }
-                //} else {
-                //    for (var b in blocks[2]) { //blocks[2] == third quadrant
+                        blockHit = this.changeDirections(currentBlock, currentBlockBottomBorder, currentBlockRightBorder);
 
-                //    }
-                //}
+                        if (blockHit) {
+                            currentBlock.hardness -= 1;
+                            index = b;
+                            blockHit = false;
+                        }
+                    }
+
+                    if (index >= 0) {
+                        if (blocks[1][index].hardness <= 0) {
+                            blocks[1][index].destroy(blocks[1], index);
+                        }
+                    }
+                }
+                if (this.rightBorder > theCanvas.width - (theCanvas.width / 3)) {
+                    for (var b in blocks[2]) { //blocks[2] == third quadrant
+                        currentBlock = blocks[2][b];
+                        currentBlockRightBorder = currentBlock.x + currentBlock.width;
+                        currentBlockBottomBorder = currentBlock.y + currentBlock.height;
+
+                        blockHit = this.changeDirections(currentBlock, currentBlockBottomBorder, currentBlockRightBorder);
+
+                        if (blockHit) {
+                            currentBlock.hardness -= 1;
+                            index = b;
+                            blockHit = false;
+                        }
+                    }
+
+                    //if we have a block hit - destroy it
+                    if (index >= 0) {
+                        if (blocks[2][index].hardness <= 0) {
+                            blocks[2][index].destroy(blocks[2], index);
+                        }
+                    }
+                }
+            }
+        };
+
+        this.changeDirections = function (currentBlock, currentBlockBottomBorder, currentBlockRightBorder) {
+            if (this.topBorder <= currentBlockBottomBorder &&
+                            this.topBorder >= currentBlock.y &&
+                            this.cX >= currentBlock.x &&
+                            this.cX <= currentBlockRightBorder) { //hit from bellow
+                this.moveSpeedY = -this.moveSpeedY;
+                return true;
+            } else if (this.bottomBorder >= currentBlock.y &&
+                       this.bottomBorder <= currentBlockBottomBorder &&
+                       this.cX >= currentBlock.x &&
+                       this.cX <= currentBlockRightBorder) { //hit from top
+                this.moveSpeedY = -this.moveSpeedY;
+                return true;
+            } else if (this.rightBorder >= currentBlock.x &&
+                       this.rightBorder <= currentBlockRightBorder &&
+                       this.cY >= currentBlock.y &&
+                       this.cY <= currentBlockBottomBorder) { //hit from left
+                this.moveSpeedX = -this.moveSpeedX;
+                return true;
+            } else if (this.leftBorder <= currentBlockRightBorder &&
+                       this.leftBorder >= currentBlock.x &&
+                       this.cY >= currentBlock.y &&
+                       this.cY <= currentBlockBottomBorder) { //hit from right
+                this.moveSpeedX = -this.moveSpeedX;
+                return true;
             }
         };
     }
@@ -293,11 +363,12 @@ function Envelope(x, y, lives, theCanvas) {
 }
 
 
-function Block(type, x, y, theCanvas) {
+function Block(type, x, y, hardness, theCanvas) {
     this.x = x;
     this.y = y;
     this.width = theCanvas.width / 18;
     this.height = theCanvas.height / 30;
+    this.hardness = hardness;
 
     this.init = function() {
         switch (type) {
@@ -336,6 +407,10 @@ function Block(type, x, y, theCanvas) {
         //canvasCtx.lineWidth = 2;
         canvasCtx.stroke();
     };
+
+    this.destroy = function (collection, index) {
+        collection.splice(index, 1);
+    }
 
     this.init();
 }

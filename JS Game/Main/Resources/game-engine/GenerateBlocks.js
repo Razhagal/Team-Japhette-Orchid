@@ -27,16 +27,16 @@ function generateBlocks() {
     for (var letter in field) {
 
         if (field[letter] === 'n') {
-            tmpBlock = new Block('n', width, height, canvas);
+            tmpBlock = new Block('n', width, height, 1, canvas);
             width += canvas.width / 18;
         } else if (field[letter] === 'p') {  //PowerUp
-            tmpBlock = new Block('p', width, height, canvas);
+            tmpBlock = new Block('p', width, height, 1, canvas);
             width += canvas.width / 18;
         } else if (field[letter] === 'd') {  //Double
-            tmpBlock = new Block('d', width, height, canvas);
+            tmpBlock = new Block('d', width, height, 2, canvas);
             width += canvas.width / 18;
         } else if (field[letter] === 't') {  //Triple
-            tmpBlock = new Block('t', width, height, canvas);
+            tmpBlock = new Block('t', width, height, 3, canvas);
             width += canvas.width / 18;
         } else if (field[letter] === '\u0020') {
             //Current char is a blank space
