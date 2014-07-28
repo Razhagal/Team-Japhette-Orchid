@@ -464,7 +464,7 @@ function Block(type, x, y, hardness, theCanvas) {
                     }
                 }
             }
-            if (this.rightBorder > theCanvas.width / 3 && this.leftBorder <= theCanvas.width - (theCanvas.width / 3)) {
+            else if (this.rightBorder > theCanvas.width / 3 && this.leftBorder <= theCanvas.width - (theCanvas.width / 3)) {
                     for (var b in blocks[1]) { //blocks[1] == second quadrant
                         currentBlock = blocks[1][b];
                         currentBlockRightBorder = currentBlock.x + currentBlock.width;
@@ -485,7 +485,7 @@ function Block(type, x, y, hardness, theCanvas) {
                         }
                     }
                 }
-                if (this.rightBorder > theCanvas.width - (theCanvas.width / 3)) {
+                else if (this.rightBorder > theCanvas.width - (theCanvas.width / 3)) {
                     for (var b in blocks[2]) { //blocks[2] == third quadrant
                         currentBlock = blocks[2][b];
                         currentBlockRightBorder = currentBlock.x + currentBlock.width;
