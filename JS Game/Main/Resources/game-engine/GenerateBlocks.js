@@ -62,7 +62,9 @@ function generateBlocks() {
     //\u0020
     //\u000A
     }
-
+    //console.log(firstQuad.length);
+    //console.log(secondQuad.length);
+    //console.log(thirdQuad.length);
     blox.push(firstQuad);
     blox.push(secondQuad);
     blox.push(thirdQuad);

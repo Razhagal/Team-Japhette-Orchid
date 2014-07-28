@@ -24,31 +24,41 @@ var powerupKinds = ["Longer", "Shorter", "Double", "Triple", "Octal", "SpeedUP",
 
 window.onload = function() {
     var theCanvas = document.getElementById('field'),
-        canvasCtx = theCanvas.getContext('2d');
-
+        canvasCtx = theCanvas.getContext('2d'),
+        started = false;
+    
     theCanvas.height = window.innerHeight - 20;
     theCanvas.width = (theCanvas.height);
 
     canvasCtx.fillStyle = 'red';
     canvasCtx.strokeStyle = 'black';
 
-    reader.onreadystatechange = function() {
-        field = reader.responseText;
-        //console.log(reader.responseText);
 
-        //initialize player envelope and ball
-        blocks = generateBlocks();
+    reader.onreadystatechange = function () {
+        if (reader.responseText.length > 0) {
+            if (!started) {
+                field = reader.responseText;
+                //console.log(reader.responseText);
 
-        //extract blocks bottom border coordinates
-        blocksFieldHeight = Math.ceil(blocks[blocks.length - 1]);
-        blocks.splice(blocks.length - 1, 1);
+                //initialize player envelope and ball
+                blocks = generateBlocks();
 
-        player = new Envelope(theCanvas.width / 2, theCanvas.height - 100, 3, theCanvas);
-        balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas, ((theCanvas.height + theCanvas.width) / (120 * 6))));
-        //console.log(blocks[2]);
+                //extract blocks bottom border coordinates
+                blocksFieldHeight = Math.ceil(blocks[blocks.length - 1]);
+                blocks.splice(blocks.length - 1, 1);
 
-        addListeners();
-        startGame();
+                player = new Envelope(theCanvas.width / 2, theCanvas.height - 100, 3, theCanvas, canvasCtx);
+                balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas, 5)); //((theCanvas.height + theCanvas.width) / (120 * 6))
+
+                addListeners();
+                startGame();
+
+                started = true;
+                console.log(blocks[0].length);
+                console.log(blocks[1].length);
+                console.log(blocks[2].length);
+            }
+        }
     };
 
     function addListeners() {
@@ -120,7 +130,7 @@ window.onload = function() {
                 powerups[i].checkPlayerCollision(player);
             }
         }
-
+        
         if (guard !== null) {
             guard.draw(canvasCtx);
         }
@@ -134,27 +144,25 @@ window.onload = function() {
     }
 };
 
-function Envelope(x, y, lives, theCanvas) {
+function Envelope(x, y, lives, theCanvas, context) {
     this.x = x;
     this.y = y;
     this.width = theCanvas.width / 8;
     this.height = theCanvas.height / 36;
     this.moveSpeed = 0;
-    this.currentSpeed = ((theCanvas.width + theCanvas.height) / (120 * 2)); //some workaround for smooth animation with some initial value
+    //this.currentSpeed = ((theCanvas.width + theCanvas.height) / (120 * 2)); //some workaround for smooth animation with some initial value
+    this.currentSpeed = 8; //some workaround for smooth animation with some initial value
     this.lives = lives;
 
     this.sticky = true;
     this.elongated = 0; //???
-    this.image; //when we include graphix
+    
+    var image = new Image();
+    image.src = 'Resources/images/envelope.png';
 
     this.draw = function(canvasCtx) {
-        canvasCtx.beginPath();
-        canvasCtx.moveTo(this.x, this.y);
-        canvasCtx.fillStyle = "#FF0000";
-        canvasCtx.rect(this.x, this.y, this.width, this.height);
-        canvasCtx.fill();
-        canvasCtx.lineWidth = 2;
-        canvasCtx.stroke();
+        canvasCtx.drawImage(image, this.x, this.y, this.width, this.height);
+        canvasCtx.lineWidth = 2; //Temp
     };
 
     this.move = function() {
@@ -228,7 +236,7 @@ function Block(type, x, y, hardness, theCanvas) {
     this.destroy = function (collection, index) {
         collection.splice(index, 1);
         if (this.powerUP > Math.random()) {
-             powerups.push(new PowerUp(Math.floor(Math.random() * theCanvas.width), 50, powerupKinds[Math.floor(Math.random() * powerupKinds.length)], theCanvas));
+            powerups.push(new PowerUp(this.x + this.width / 2, this.y - this.height / 2, powerupKinds[Math.floor(Math.random() * powerupKinds.length)], theCanvas));
             console.log(powerups);
         }
     };
@@ -286,7 +294,7 @@ function PowerUp(x, y, kind, theCanvas) {
                 this.activate = function() {
                     balls[0].multiply(8);
                 };
-                this.fillColor = "#dada";
+                this.fillColor = "#dad";
                 break;
 
             case "SpeedUP":
@@ -381,6 +389,9 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
     this.rad = rad;
     this.mainSpeed = mainSpeed;
 
+    var image = new Image();
+    image.src = 'Resources/images/ball.png';
+
     if (!player.sticky) {
         this.moveSpeedX = (Math.floor(Math.random() * this.mainSpeed*2)) * randomSign();
         this.moveSpeedY = (this.mainSpeed*2 - Math.abs(this.moveSpeedX)) * randomSign();
@@ -396,10 +407,7 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
     };
 
     this.draw = function(canvasCtx) {
-        canvasCtx.beginPath();
-        canvasCtx.arc(this.cX, this.cY, this.rad, 0, 2 * Math.PI); // Makes Arc of 2*pi = Circle
-        canvasCtx.fill();
-        canvasCtx.stroke();
+        canvasCtx.drawImage(image, this.cX, this.cY);
     };
 
     this.move = function(i) {
@@ -522,6 +530,7 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
                     currentBlockBottomBorder = currentBlock.y + currentBlock.height;
 
                     blockHit = this.changeDirections(currentBlock, currentBlockBottomBorder, currentBlockRightBorder);
+                    console.log(currentBlock);
 
                     if (blockHit) {
                         currentBlock.health -= 1;
