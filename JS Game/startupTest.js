@@ -154,9 +154,9 @@ window.onload = function () {
         player.move();
         ball.draw(canvasCtx);
         document.onkeypress = test;
-        function test(e) {
+   
              ball.move(); //Startup testing
-        }
+       
        
         
        
