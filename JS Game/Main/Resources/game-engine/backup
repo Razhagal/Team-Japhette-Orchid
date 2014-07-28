@@ -189,8 +189,13 @@ window.onload = function() {
         this.cY = cY;
         this.rad = rad;
         this.mainSpeed = mainSpeed;
-        this.moveSpeedX = (Math.floor(Math.random() * this.mainSpeed*2)) * randomSign();
-        this.moveSpeedY = (this.mainSpeed*2 - this.moveSpeedX) * randomSign();
+        if (!player.sticky) {
+            this.moveSpeedX = (Math.floor(Math.random() * this.mainSpeed*2)) * randomSign();
+            this.moveSpeedY = (this.mainSpeed*2 - Math.abs(this.moveSpeedX)) * randomSign();
+        } else{
+            this.moveSpeedX = 0;
+            this.moveSpeedY = 0;
+        }
         this.multiply = function(times) {
             for (var i = 0; i < times; i++) {
                 balls.push(new Ball(this.cX, this.cY, this.rad, theCanvas, this.mainSpeed));
@@ -276,7 +281,7 @@ window.onload = function() {
                         blockHit = this.changeDirections(currentBlock, currentBlockBottomBorder, currentBlockRightBorder);
                         
                         if (blockHit) {
-                            currentBlock.hardness -= 1;
+                            currentBlock.health -= 1;
                             index = b;
                             blockHit = false;
                         }
@@ -312,7 +317,7 @@ window.onload = function() {
                     }
 
                     if (index >= 0) {
-                        if (blocks[0][index].hardness <= 0) {
+                        if (blocks[0][index].health <= 0) {
                             blocks[0][index].destroy(blocks[0], index);
                         }
                     }
@@ -326,14 +331,14 @@ window.onload = function() {
                         blockHit = this.changeDirections(currentBlock, currentBlockBottomBorder, currentBlockRightBorder);
 
                         if (blockHit) {
-                            currentBlock.hardness -= 1;
+                            currentBlock.health -= 1;
                             index = b;
                             blockHit = false;
                         }
                     }
 
                     if (index >= 0) {
-                        if (blocks[1][index].hardness <= 0) {
+                        if (blocks[1][index].health <= 0) {
                             blocks[1][index].destroy(blocks[1], index);
                         }
                     }
@@ -347,7 +352,7 @@ window.onload = function() {
                         blockHit = this.changeDirections(currentBlock, currentBlockBottomBorder, currentBlockRightBorder);
 
                         if (blockHit) {
-                            currentBlock.hardness -= 1;
+                            currentBlock.health -= 1;
                             index = b;
                             blockHit = false;
                         }
@@ -355,7 +360,7 @@ window.onload = function() {
 
                     //if we have a block hit - destroy it
                     if (index >= 0) {
-                        if (blocks[2][index].hardness <= 0) {
+                        if (blocks[2][index].health <= 0) {
                             blocks[2][index].destroy(blocks[2], index);
                         }
                     }

@@ -189,8 +189,13 @@ window.onload = function() {
         this.cY = cY;
         this.rad = rad;
         this.mainSpeed = mainSpeed;
-        this.moveSpeedX = (Math.floor(Math.random() * this.mainSpeed*2)) * randomSign();
-        this.moveSpeedY = (this.mainSpeed*2 - Math.abs(this.moveSpeedX)) * randomSign();
+        if (!player.sticky) {
+            this.moveSpeedX = (Math.floor(Math.random() * this.mainSpeed*2)) * randomSign();
+            this.moveSpeedY = (this.mainSpeed*2 - Math.abs(this.moveSpeedX)) * randomSign();
+        } else{
+            this.moveSpeedX = 0;
+            this.moveSpeedY = 0;
+        }
         this.multiply = function(times) {
             for (var i = 0; i < times; i++) {
                 balls.push(new Ball(this.cX, this.cY, this.rad, theCanvas, this.mainSpeed));
