@@ -13,8 +13,7 @@ window.onload = function () {
     var theCanvas = document.getElementById('field');
     var canvasCtx = theCanvas.getContext('2d');
     
-    canvasCtx.fillStyle = 'red';
-    canvasCtx.strokeStyle = 'black';
+   
 
     function Envelope(x, y, width, height, lives) {
         this.x = x;
