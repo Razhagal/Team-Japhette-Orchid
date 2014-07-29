@@ -18,7 +18,6 @@ var balls = [],
     powerups = [],
     guard = null,
     player,
-<<<<<<< HEAD
     ballSpeed,
     blockHeight,
     blockWidth,
@@ -27,11 +26,8 @@ var balls = [],
     playerHeight,
     playerWidth,
     playerMoveSpeed,
-    blocksFieldHeight;
-=======
     blocksFieldHeight,
     button;
->>>>>>> 9dd6b024010c47dc3636fdb813b29b3da62fbd28
 
 var powerupKinds = ["Longer", "Shorter", "Double", "Triple", "Octal", "SpeedUP", "SpeedDOWN", "Guard"];
 window.onload = function() {
