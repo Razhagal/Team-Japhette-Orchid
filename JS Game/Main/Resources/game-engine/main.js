@@ -18,7 +18,8 @@ var balls = [],
     powerups = [],
     guard = null,
     player,
-    blocksFieldHeight;
+    blocksFieldHeight,
+    button;
 
 var powerupKinds = ["Longer", "Shorter", "Double", "Triple", "Octal", "SpeedUP", "SpeedDOWN", "Guard"];
 
@@ -51,7 +52,34 @@ window.onload = function() {
                 balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas, 5)); //((theCanvas.height + theCanvas.width) / (120 * 6))
 
                 addListeners();
-                startGame();
+               
+                //Start Screen test ->>>
+                 startScreen();
+                function startScreen() {
+                    var c = document.getElementById("field");
+                    var ctx = c.getContext("2d");
+                    ctx.font = "50px Arial";
+                    ctx.strokeText("Alphabounce",155,50);
+                    
+                    ctx.stroke();
+                    startScreenbut();
+                    function startScreenbut() {
+                    var startButton = document.createElement("button"); 
+                    startButton.style.width = "300px";
+                    startButton.style.height = "50px";
+                    startButton.style.position = "absolute";
+                    startButton.style.top = "100px";
+                    startButton.style.left = "525px";
+                    startButton.innerText = "START";
+                    startButton.onclick = function() {
+                        startGame();
+                        document.body.removeChild(startButton);
+                    };
+                    document.body.appendChild(startButton).innerText;
+                
+                    }
+                }
+               //Start screen test end <----
 
                 started = true;
                 console.log(blocks[0].length);
@@ -107,7 +135,6 @@ window.onload = function() {
 
     function startGame() {
         canvasCtx.clearRect(0, 0, theCanvas.width, theCanvas.height);
-
         player.draw(canvasCtx);
         player.move();
 
