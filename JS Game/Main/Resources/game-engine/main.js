@@ -18,6 +18,7 @@ var balls = [],
     powerups = [],
     guard = null,
     player,
+<<<<<<< HEAD
     ballSpeed,
     blockHeight,
     blockWidth,
@@ -27,6 +28,10 @@ var balls = [],
     playerWidth,
     playerMoveSpeed,
     blocksFieldHeight;
+=======
+    blocksFieldHeight,
+    button;
+>>>>>>> 9dd6b024010c47dc3636fdb813b29b3da62fbd28
 
 var powerupKinds = ["Longer", "Shorter", "Double", "Triple", "Octal", "SpeedUP", "SpeedDOWN", "Guard"];
 window.onload = function() {
@@ -64,8 +69,35 @@ window.onload = function() {
                 balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas, ballSpeed)); //((theCanvas.height + theCanvas.width) / (120 * 6))
 
                 addListeners();
-                startScreen();
 
+                startScreen();
+                //Start Screen test ->>>
+                 startScreen();
+                function startScreen() {
+                    var c = document.getElementById("field");
+                    var ctx = c.getContext("2d");
+                    ctx.font = "50px Arial";
+                    ctx.strokeText("Alphabounce",155,50);
+                    
+                    ctx.stroke();
+                    startScreenbut();
+                    function startScreenbut() {
+                    var startButton = document.createElement("button"); 
+                    startButton.style.width = "300px";
+                    startButton.style.height = "50px";
+                    startButton.innerHTML = "Start Game!";
+                    startButton.style.position = "absolute";
+                    startButton.style.top = "100px";
+                    startButton.style.left = "525px";
+                    startButton.innerText = "START";
+                    startButton.onclick = function() {
+                        startGame();
+                        document.body.removeChild(startButton);
+                    };
+                    document.body.appendChild(startButton).innerText;
+                
+                    }
+                }
 
                 started = true;
                 console.log(blocks[0].length);
@@ -74,23 +106,6 @@ window.onload = function() {
             }
         }
     };
-            function startScreen() {
-                var startButton = document.createElement("button"); 
-                startButton.innerHTML = "Start Game";
-                startButton.style.width = "300px";
-                startButton.style.height = "50px";
-                startButton.style.position = "absolute";
-                startButton.style.top = "500px";
-                startButton.style.left = "50%";
-                startButton.onclick = function() {
-                    startGame();
-                    startButton.style.display = "none";
-                };
-                document.body.appendChild(startButton);
-
-                //EventListener
-                
-            }
     function addListeners() {
         document.body.addEventListener('keydown', function(e) {
             if (!e) {
@@ -137,7 +152,6 @@ window.onload = function() {
 
     function startGame() {
         canvasCtx.clearRect(0, 0, theCanvas.width, theCanvas.height);
-
         player.draw(canvasCtx);
         player.move();
 
