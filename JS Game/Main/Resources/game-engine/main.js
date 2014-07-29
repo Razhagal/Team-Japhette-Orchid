@@ -25,7 +25,7 @@ var powerupKinds = ["Longer", "Shorter", "Double", "Triple", "Octal", "SpeedUP",
 window.onload = function() {
     var theCanvas = document.getElementById('field'),
         canvasCtx = theCanvas.getContext('2d');
-    
+
     theCanvas.height = window.innerHeight - 20;
     theCanvas.width = (theCanvas.height);
 
@@ -33,6 +33,7 @@ window.onload = function() {
     canvasCtx.strokeStyle = 'black';
 
     reader.onreadystatechange = function () {
+
         if (reader.readyState === 4 && reader.status === 200) {
             field = reader.responseText;
             //console.log(reader.responseText);
@@ -48,40 +49,38 @@ window.onload = function() {
             balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas, 5)); //((theCanvas.height + theCanvas.width) / (120 * 6))
 
             addListeners();
-
-            //Start Screen test ->>>
             startScreen();
-            function startScreen() {
-                var c = document.getElementById("field");
-                var ctx = c.getContext("2d");
-                startScreenBut();
-                function startScreenBut() {
-                    var startButton = document.createElement("button");
-                    startButton.className = "button";
-                    startButton.innerText = "START";
-
-                    var heading = document.createElement("h1");
-                    heading.className = "heading";
-                    heading.innerText = "ALPHABOUNCE";
-
-
-                    startButton.onclick = function () {
-                        startGame();
-                        startButton.style.display = "none";
-                        heading.style.display = "none";
-                    };
-                    document.body.appendChild(startButton);
-                    document.body.appendChild(heading);
-
-                }
-            }
-            //Start screen test end <----
-
 
             console.log(blocks[0].length);
             console.log(blocks[1].length);
         }
     };
+
+    function startScreen() {
+        var startButton = document.createElement('button'),
+            heading = document.createElement('h1');
+
+        document.body.appendChild(startButton);
+        document.body.appendChild(heading);
+
+        startButton.className = 'button';
+        startButton.innerHTML = 'START';
+
+        heading.className = 'heading';
+        heading.innerHTML = 'ALPHABOUNCE';
+
+        document.body.style.background = 'url(Resources/images/game-background.jpg)';
+        document.body.style.backgroundSize = 'cover';
+        theCanvas.style.background = 'url(Resources/images/canvas-background2.png)';
+		theCanvas.style.backgroundSize = 'cover';
+		
+        startButton.onclick = function () {
+            document.body.removeChild(startButton);
+            document.body.removeChild(heading);
+
+            startGame();
+        };
+    }
 
     function addListeners() {
         document.body.addEventListener('keydown', function(e) {

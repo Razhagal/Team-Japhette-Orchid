@@ -1,0 +1,57 @@
+﻿/*body {
+    background-image: url('../images/game-background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}*/
+
+#field {
+    display: block;
+    margin: 0 auto;
+    /*background-color: black;*/
+    border: 1px solid #68759B;
+    border-radius: 5px;
+}
+
+
+.heading {
+    display: inline-block;
+    position: absolute;
+    top: 5%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 28%;
+    font-size: 40px;
+    color: white;
+    -webkit-transition: all 1s;
+    transition: all 1s;
+}
+
+    .heading:hover {
+        color: tomato;
+        cursor: pointer;
+    }
+
+.button {
+    position: absolute;
+    top: 20%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 200px;
+    height: 40px;
+    font-size: 20px;
+    color: white;
+    background-color: tomato;
+    border: 3px solid white;
+    border-radius: 4px;
+    -webkit-transition: all 1s;
+    transition: all 1s;
+}
+
+    .button:hover {
+        color: tomato;
+        background-color: white;
+        border-radius: 20px;
+        cursor: pointer;
+    }
