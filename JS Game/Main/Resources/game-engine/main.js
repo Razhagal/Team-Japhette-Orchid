@@ -85,8 +85,8 @@ window.onload = function() {
 
                     startButton.onclick = function() {
                         startGame();
-                        document.body.removeChild(startButton);
-                        document.body.removeChild(heading);
+                        startButton.style.display = "none";
+                        heading.style.display = "none";
                     };
                     document.body.appendChild(startButton);
                     document.body.appendChild(heading);
