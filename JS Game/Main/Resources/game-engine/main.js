@@ -58,30 +58,16 @@ window.onload = function() {
                 function startScreen() {
                     var c = document.getElementById("field");
                     var ctx = c.getContext("2d");
-                    
-                    
-                    ctx.stroke();
-                    startScreenbut();
-                    function startScreenbut() {
-                    var startButton = document.createElement("button"); 
-                    startButton.style.width = "300px";
-                    startButton.style.color = "black";
-                    startButton.style.background = "tomato";
-                    startButton.style.border = "2px solid black";
-                    startButton.style.height = "50px";
-                    startButton.style.position = "absolute";
-                    startButton.style.top = "20%";
-                    startButton.style.left = "39%";
+                    startScreenBut();
+                    function startScreenBut() {
+                    var startButton = document.createElement("button");
+                    startButton.className = "button";
                     startButton.innerText = "START";
-
+                    
                     var heading = document.createElement("h1");
-
-                    heading.innerText = "Alphabounce";
-                    heading.style.position = "absolute";
-                    heading.style.top = "2%";
-                    heading.style.left = "43%";
-                    heading.style.width = "40px";
-                    heading.style.color = "tomato";
+                    heading.className = "heading";
+                    heading.innerText = "ALPHABOUNCE";
+                    
 
                     startButton.onclick = function() {
                         startGame();
