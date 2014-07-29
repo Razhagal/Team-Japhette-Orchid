@@ -18,15 +18,13 @@ var balls = [],
     powerups = [],
     guard = null,
     player,
-    blocksFieldHeight,
-    button;
+    blocksFieldHeight;
 
 var powerupKinds = ["Longer", "Shorter", "Double", "Triple", "Octal", "SpeedUP", "SpeedDOWN", "Guard"];
 
 window.onload = function() {
     var theCanvas = document.getElementById('field'),
-        canvasCtx = theCanvas.getContext('2d'),
-        started = false;
+        canvasCtx = theCanvas.getContext('2d');
     
     theCanvas.height = window.innerHeight - 20;
     theCanvas.width = (theCanvas.height);
@@ -34,58 +32,54 @@ window.onload = function() {
     canvasCtx.fillStyle = 'red';
     canvasCtx.strokeStyle = 'black';
 
-
     reader.onreadystatechange = function () {
-        if (reader.responseText.length > 0) {
-            if (!started) {
-                field = reader.responseText;
-                //console.log(reader.responseText);
+        if (reader.readyState === 4 && reader.status === 200) {
+            field = reader.responseText;
+            //console.log(reader.responseText);
 
-                //initialize player envelope and ball
-                blocks = generateBlocks();
+            //initialize player envelope and ball
+            blocks = generateBlocks();
 
-                //extract blocks bottom border coordinates
-                blocksFieldHeight = Math.ceil(blocks[blocks.length - 1]);
-                blocks.splice(blocks.length - 1, 1);
+            //extract blocks bottom border coordinates
+            blocksFieldHeight = Math.ceil(blocks[blocks.length - 1]);
+            blocks.splice(blocks.length - 1, 1);
 
-                player = new Envelope(theCanvas.width / 2, theCanvas.height - 100, 3, theCanvas, canvasCtx);
-                balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas, 5)); //((theCanvas.height + theCanvas.width) / (120 * 6))
+            player = new Envelope(theCanvas.width / 2, theCanvas.height - 100, 3, theCanvas, canvasCtx);
+            balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas, 5)); //((theCanvas.height + theCanvas.width) / (120 * 6))
 
-                addListeners();
-               
-                //Start Screen test ->>>
-                 startScreen();
-                function startScreen() {
-                    var c = document.getElementById("field");
-                    var ctx = c.getContext("2d");
-                    startScreenBut();
-                    function startScreenBut() {
+            addListeners();
+
+            //Start Screen test ->>>
+            startScreen();
+            function startScreen() {
+                var c = document.getElementById("field");
+                var ctx = c.getContext("2d");
+                startScreenBut();
+                function startScreenBut() {
                     var startButton = document.createElement("button");
                     startButton.className = "button";
                     startButton.innerText = "START";
-                    
+
                     var heading = document.createElement("h1");
                     heading.className = "heading";
                     heading.innerText = "ALPHABOUNCE";
-                    
 
-                    startButton.onclick = function() {
+
+                    startButton.onclick = function () {
                         startGame();
                         startButton.style.display = "none";
                         heading.style.display = "none";
                     };
                     document.body.appendChild(startButton);
                     document.body.appendChild(heading);
-                
-                    }
-                }
-               //Start screen test end <----
 
-                started = true;
-                console.log(blocks[0].length);
-                console.log(blocks[1].length);
-                console.log(blocks[2].length);
+                }
             }
+            //Start screen test end <----
+
+
+            console.log(blocks[0].length);
+            console.log(blocks[1].length);
         }
     };
 
@@ -135,6 +129,7 @@ window.onload = function() {
 
     function startGame() {
         canvasCtx.clearRect(0, 0, theCanvas.width, theCanvas.height);
+
         player.draw(canvasCtx);
         player.move();
 
@@ -256,7 +251,6 @@ function Block(type, x, y, hardness, theCanvas) {
         canvasCtx.fillStyle = this.fillColor;
         canvasCtx.rect(this.x, this.y, this.width, this.height);
         canvasCtx.fill();
-        //canvasCtx.lineWidth = 2;
         canvasCtx.stroke();
     };
 
@@ -484,13 +478,12 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
                 }
             }
         } else if (this.bottomBorder >= theCanvas.height) {
-
             if (balls.length > 1) {
                 balls.splice(i, 1);
             } else {
                 player.lives -= 1;
                 player.sticky = true;
-                balls[0] = new Ball(player.x + (player.width / 2) - this.rad, (player.y - 7), 7, theCanvas, ((theCanvas.height + theCanvas.width) / (120 * 6))); // Replaces ball that spawns at player location when it's destroyed.
+                balls[0] = new Ball(player.x + (player.width / 2) - this.rad, (player.y - 7), 7, theCanvas, 5); // Replaces ball that spawns at player location when it's destroyed.
             }
         }
 
@@ -506,11 +499,13 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
         var currentBlock,
             currentBlockRightBorder,
             currentBlockBottomBorder,
-            index = -1,
-            blockHit = false;
+            blockHit = false,
+            index;
 
-        if (this.topBorder <= blocksFieldHeight) {
-            if (this.leftBorder <= theCanvas.width / 3) { //first quadrant check
+        if (this.topBorder <= blocksFieldHeight + 10) {
+            if (this.leftBorder <= theCanvas.width / 2) { //first quadrant check
+                index = -1;
+
                 for (var b in blocks[0]) { //blocks[0] == first quadrant
                     currentBlock = blocks[0][b];
                     currentBlockRightBorder = currentBlock.x + currentBlock.width;
@@ -524,12 +519,17 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
                         blockHit = false;
                     }
                 }
+
                 if (index >= 0) {
                     if (blocks[0][index].health <= 0) {
                         blocks[0][index].destroy(blocks[0], index);
                     }
                 }
-            } else if (this.rightBorder > theCanvas.width / 3 && this.leftBorder <= theCanvas.width - (theCanvas.width / 3)) {
+            }
+
+            if (this.rightBorder >= theCanvas.width / 3) {
+                index = -1;
+
                 for (var b in blocks[1]) { //blocks[1] == second quadrant
                     currentBlock = blocks[1][b];
                     currentBlockRightBorder = currentBlock.x + currentBlock.width;
@@ -538,41 +538,20 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
                     blockHit = this.changeDirections(currentBlock, currentBlockBottomBorder, currentBlockRightBorder);
 
                     if (blockHit) {
-                        currentBlock.hardness -= 1;
-                        index = b;
-                        blockHit = false;
-                    }
-                }
-
-                if (index >= 0) {
-                    if (blocks[1][index].hardness <= 0) {
-                        blocks[1][index].destroy(blocks[1], index);
-                    }
-                }
-
-            } else if (this.rightBorder > theCanvas.width - (theCanvas.width / 3)) {
-                for (var b in blocks[2]) { //blocks[2] == third quadrant
-                    currentBlock = blocks[2][b];
-                    currentBlockRightBorder = currentBlock.x + currentBlock.width;
-                    currentBlockBottomBorder = currentBlock.y + currentBlock.height;
-
-                    blockHit = this.changeDirections(currentBlock, currentBlockBottomBorder, currentBlockRightBorder);
-                    console.log(currentBlock);
-
-                    if (blockHit) {
                         currentBlock.health -= 1;
-                        currentBlock.hardness -= 1;
                         index = b;
                         blockHit = false;
                     }
                 }
 
-                //if we have a block hit - destroy it
                 if (index >= 0) {
-                    if (blocks[2][index].hardness <= 0) {
-                        blocks[2][index].destroy(blocks[2], index);
-                    }
+                    if (blocks[1][index] !== undefined) {
+                        if (blocks[1][index].health <= 0) {
+                            blocks[1][index].destroy(blocks[1], index);
+                        }
+                    }                    
                 }
+
             }
         }
     };

@@ -51,23 +51,18 @@ function generateBlocks() {
             continue;
         }
 
-        if (width <= canvas.width / 3) {
+        if (width <= canvas.width / 2) {
             firstQuad.push(tmpBlock);
-        } else if (width > canvas.width / 3 && width <= canvas.width - (canvas.width / 3)) {
+        } else if (width > canvas.width / 2) {
             secondQuad.push(tmpBlock);
-        } else {
-            thirdQuad.push(tmpBlock);
         }
 
     //\u0020
     //\u000A
     }
-    //console.log(firstQuad.length);
-    //console.log(secondQuad.length);
-    //console.log(thirdQuad.length);
+
     blox.push(firstQuad);
     blox.push(secondQuad);
-    blox.push(thirdQuad);
     blox.push(height + canvas.height / 30); //smuggle the blocks bottom border coordinates value out to main.js
 
     return blox;
