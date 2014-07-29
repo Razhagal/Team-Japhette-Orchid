@@ -18,32 +18,19 @@ var balls = [],
     powerups = [],
     guard = null,
     player,
-    ballSpeed,
-    blockHeight,
-    blockWidth,
-    powerupHeight,
-    powerupWidth,
-    playerHeight,
-    playerWidth,
-    playerMoveSpeed,
     blocksFieldHeight,
     button;
 
 var powerupKinds = ["Longer", "Shorter", "Double", "Triple", "Octal", "SpeedUP", "SpeedDOWN", "Guard"];
+
 window.onload = function() {
     var theCanvas = document.getElementById('field'),
         canvasCtx = theCanvas.getContext('2d'),
         started = false;
+    
     theCanvas.height = window.innerHeight - 20;
     theCanvas.width = (theCanvas.height);
-    ballSpeed = ((theCanvas.height + theCanvas.width) / (120 * 3));
-    blockHeight = theCanvas.height / 30;
-    blockWidth = theCanvas.width / 18;
-    powerupHeight = theCanvas.height / 12;
-    powerupWidth = theCanvas.width / 30;
-    playerHeight = theCanvas.height /36;
-    playerWidth = theCanvas.width / 8;
-    playerMoveSpeed = theCanvas.width / (60*1.2); //divided by the seconds it takes to cross the screen
+
     canvasCtx.fillStyle = 'red';
     canvasCtx.strokeStyle = 'black';
 
@@ -62,38 +49,51 @@ window.onload = function() {
                 blocks.splice(blocks.length - 1, 1);
 
                 player = new Envelope(theCanvas.width / 2, theCanvas.height - 100, 3, theCanvas, canvasCtx);
-                balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas, ballSpeed)); //((theCanvas.height + theCanvas.width) / (120 * 6))
+                balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas, 5)); //((theCanvas.height + theCanvas.width) / (120 * 6))
 
                 addListeners();
-
-                startScreen();
+               
                 //Start Screen test ->>>
                  startScreen();
                 function startScreen() {
                     var c = document.getElementById("field");
                     var ctx = c.getContext("2d");
-                    ctx.font = "50px Arial";
-                    ctx.strokeText("Alphabounce",155,50);
+                    
                     
                     ctx.stroke();
                     startScreenbut();
                     function startScreenbut() {
                     var startButton = document.createElement("button"); 
                     startButton.style.width = "300px";
+                    startButton.style.color = "black";
+                    startButton.style.background = "tomato";
+                    startButton.style.border = "2px solid black";
                     startButton.style.height = "50px";
-                    startButton.innerHTML = "Start Game!";
                     startButton.style.position = "absolute";
-                    startButton.style.top = "100px";
-                    startButton.style.left = "525px";
+                    startButton.style.top = "20%";
+                    startButton.style.left = "39%";
                     startButton.innerText = "START";
+
+                    var heading = document.createElement("h1");
+
+                    heading.innerText = "Alphabounce";
+                    heading.style.position = "absolute";
+                    heading.style.top = "2%";
+                    heading.style.left = "43%";
+                    heading.style.width = "40px";
+                    heading.style.color = "tomato";
+
                     startButton.onclick = function() {
                         startGame();
                         document.body.removeChild(startButton);
+                        document.body.removeChild(heading);
                     };
-                    document.body.appendChild(startButton).innerText;
+                    document.body.appendChild(startButton);
+                    document.body.appendChild(heading);
                 
                     }
                 }
+               //Start screen test end <----
 
                 started = true;
                 console.log(blocks[0].length);
@@ -102,6 +102,7 @@ window.onload = function() {
             }
         }
     };
+
     function addListeners() {
         document.body.addEventListener('keydown', function(e) {
             if (!e) {
@@ -187,11 +188,11 @@ window.onload = function() {
 function Envelope(x, y, lives, theCanvas, context) {
     this.x = x;
     this.y = y;
-    this.width = playerWidth;
-    this.height = playerHeight;
+    this.width = theCanvas.width / 8;
+    this.height = theCanvas.height / 36;
     this.moveSpeed = 0;
     //this.currentSpeed = ((theCanvas.width + theCanvas.height) / (120 * 2)); //some workaround for smooth animation with some initial value
-    this.currentSpeed = playerMoveSpeed; //some workaround for smooth animation with some initial value
+    this.currentSpeed = 8; //some workaround for smooth animation with some initial value
     this.lives = lives;
 
     this.sticky = true;
@@ -220,8 +221,8 @@ function Envelope(x, y, lives, theCanvas, context) {
 function Block(type, x, y, hardness, theCanvas) {
     this.x = x;
     this.y = y;
-    this.width = blockWidth;
-    this.height = blockHeight;
+    this.width = theCanvas.width / 18;
+    this.height = theCanvas.height / 30;
     this.hardness = hardness;
 
     this.init = function() {
@@ -287,8 +288,8 @@ function Block(type, x, y, hardness, theCanvas) {
 function PowerUp(x, y, kind, theCanvas) {
     this.x = x;
     this.y = y;
-    this.height = powerupHeight;
-    this.width = powerupWidth;
+    this.height = theCanvas.height / 12;
+    this.width = theCanvas.width / 45;
 
     this.active = true;
 
@@ -503,7 +504,7 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
             } else {
                 player.lives -= 1;
                 player.sticky = true;
-                balls[0] = new Ball(player.x + (player.width / 2) - this.rad, (player.y - 7), 7, theCanvas, ballSpeed); // Replaces ball that spawns at player location when it's destroyed.
+                balls[0] = new Ball(player.x + (player.width / 2) - this.rad, (player.y - 7), 7, theCanvas, ((theCanvas.height + theCanvas.width) / (120 * 6))); // Replaces ball that spawns at player location when it's destroyed.
             }
         }
 
@@ -570,6 +571,7 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
                     currentBlockBottomBorder = currentBlock.y + currentBlock.height;
 
                     blockHit = this.changeDirections(currentBlock, currentBlockBottomBorder, currentBlockRightBorder);
+                    console.log(currentBlock);
 
                     if (blockHit) {
                         currentBlock.health -= 1;
