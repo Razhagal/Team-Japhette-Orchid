@@ -1,14 +1,13 @@
 var reader = new XMLHttpRequest();
 var field;
 
-function loadFile() {
-    reader.open('get', 'Resources/game-engine/test.txt', true);
+function loadFile(level) {
+    reader.open('get', 'Resources/game-engine/' + level.toString() + '.txt', true);
     reader.send(null);
 }
-
-loadFile();
-
-function generateBlocks() {
+function generateBlocks(level) {
+    loadFile(level);
+    field = reader.responseText;
     var canvas = document.getElementById('field'),
         ctx = canvas.getContext('2d'),
         blox = [],

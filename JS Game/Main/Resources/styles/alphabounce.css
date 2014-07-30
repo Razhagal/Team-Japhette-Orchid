@@ -4,14 +4,21 @@
     background-size: cover;
 }*/
 
+@font-face{
+    font-family: fnt;
+    src: url("../Font/bgothm.ttf") format('truetype');
+}
 #field {
     display: block;
     margin: 0 auto;
     /*background-color: black;*/
     border: 1px solid #68759B;
     border-radius: 5px;
+    font-family: fonter;
 }
-
+body *{
+    font-family: fnt, "fnt", Arial;
+}
 
 .heading {
     display: inline-block;
@@ -34,7 +41,6 @@
 
 .button {
     position: absolute;
-    top: 20%;
     left: 0;
     right: 0;
     margin: 0 auto;
@@ -42,8 +48,9 @@
     height: 40px;
     font-size: 20px;
     color: white;
-    background-color: tomato;
+    background-color: #383960;
     border: 3px solid white;
+    background-color: blue;
     border-radius: 4px;
     -webkit-transition: all 1s;
     transition: all 1s;
