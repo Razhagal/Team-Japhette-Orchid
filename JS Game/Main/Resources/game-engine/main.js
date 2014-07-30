@@ -571,15 +571,18 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
 
         //playfield border and envelope collision checks
         if (this.leftBorder <= 0) {
-            this.moveSpeedX = -this.moveSpeedX; // sets variable to move right
+            this.moveSpeedX = -this.moveSpeedX;
+            this.cX = 0 + this.rad ; // sets variable to move right
         } else if (this.rightBorder >= theCanvas.width) {
             this.moveSpeedX = -this.moveSpeedX; //sets variable to move left
+            this.cX = theCanvas.width-this.rad*2;
         }
 
         /*Bug : Somethimes the ball can go fast enough as to exit the boundaries of the level, leaving it glitched*/
         if(guard !== null){
             if (this.bottomBorder >= guard.y) {
                 this.moveSpeedY = this.moveSpeedY * (-1);
+                this.cY = 0 + this.rad;
             }
         }
 
