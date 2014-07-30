@@ -40,13 +40,13 @@ window.onload = function() {
             //console.log(reader.responseText);
 
             //initialize player envelope and ball
-            blocks = generateBlocks();
+            blocks = generateBlocks(); //Generating balls from a txt file
 
             //extract blocks bottom border coordinates
             blocksFieldHeight = Math.ceil(blocks[blocks.length - 1]);
             blocks.splice(blocks.length - 1, 1);
 
-            player = new Envelope(theCanvas.width / 2, theCanvas.height - 100, 3, theCanvas, canvasCtx);
+            player = new Envelope(theCanvas.width / 2, theCanvas.height - 100, 3, theCanvas, canvasCtx); //Initialize platform
             balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas, 5)); //((theCanvas.height + theCanvas.width) / (120 * 6))
 
             addListeners();
