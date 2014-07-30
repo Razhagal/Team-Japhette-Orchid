@@ -97,7 +97,7 @@ window.onload = function() {
         startButton.style.top = (theCanvas.height / 1.4 + 10).toString() + 'px';
 
         canvasCtx.fillStyle = '#FFFFFF';
-        canvasCtx.font = '3em fnt, \'fnt\', Arial';
+        canvasCtx.font = '2.2em fnt, Arial';
         canvasCtx.textAlign = 'center';
         canvasCtx.fillText(textToDraw, theCanvas.width / 2, theCanvas.height / 8, theCanvas.width);
 
@@ -113,12 +113,12 @@ window.onload = function() {
     }
 
     function scoreView() {
-        canvasCtx.font = '1em fnt, \'fnt\', Arial';
+        canvasCtx.font = '0.8em fnt, Arial';
         canvasCtx.textAlign = 'left';
         canvasCtx.fillStyle = '#fff';
 
-        canvasCtx.drawImage(scoreIcon, theCanvas.width - 150, theCanvas.height - 30);
-        canvasCtx.fillText('Score: ' + Math.round(score), theCanvas.width - 130, theCanvas.height - 17);
+        canvasCtx.drawImage(scoreIcon, theCanvas.width - 170, theCanvas.height - 30);
+        canvasCtx.fillText('Score: ' + Math.round(score), theCanvas.width - 150, theCanvas.height - 17);
     }
 
     function showLives() {
@@ -141,7 +141,7 @@ window.onload = function() {
         startButton.className = 'button';
         startButton.style.top = (theCanvas.height / 1.4 + 10).toString() + 'px';
 
-        canvasCtx.font = '3em fnt, \'fnt\', Arial';
+        canvasCtx.font = '2.2em fnt, Arial';
         canvasCtx.textAlign = 'center';
         canvasCtx.fillStyle = '#fff';
 
@@ -169,7 +169,7 @@ window.onload = function() {
         startButton.style.top = (theCanvas.height / 1.4 + 10).toString() + 'px';
 
         canvasCtx.fillStyle = '#FFFFFF';
-        canvasCtx.font = '3em fnt, \'fnt\', Arial';
+        canvasCtx.font = '2.2em fnt, Arial';
         canvasCtx.textAlign = 'center';
 
         startButton.innerHTML = 'Next!';

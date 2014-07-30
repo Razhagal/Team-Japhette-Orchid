@@ -1,6 +1,6 @@
 ﻿@font-face{
     font-family: fnt;
-    src: url('../Font/bgothm.ttf') format('truetype');
+    src: url('../Font/venus-rising-rg.ttf') format('truetype');
 }
 
 body {
@@ -12,6 +12,7 @@ body {
     margin: 0 auto;
     border: 1px solid #68759B;
     border-radius: 5px;
+    font-family: fnt;
 }
 
 .button {
