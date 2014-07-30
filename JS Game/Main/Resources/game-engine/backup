@@ -371,44 +371,26 @@ window.onload = function() {
         this.changeDirections = function (currentBlock, currentBlockBottomBorder, currentBlockRightBorder) {
             if (this.topBorder <= currentBlockBottomBorder &&
                             this.topBorder >= currentBlock.y &&
-<<<<<<< HEAD
-                            this.cX + this.rad/2 >= currentBlock.x &&
-=======
                             this.cX >= currentBlock.x &&
->>>>>>> 7e5eea8fb4a221d439b41d019ebe0e527be048d1
                             this.cX <= currentBlockRightBorder) { //hit from bellow
                 this.moveSpeedY = -this.moveSpeedY;
                 return true;
             } else if (this.bottomBorder >= currentBlock.y &&
                        this.bottomBorder <= currentBlockBottomBorder &&
-<<<<<<< HEAD
-                       this.cX + this.rad/2 >= currentBlock.x &&
-=======
                        this.cX >= currentBlock.x &&
->>>>>>> 7e5eea8fb4a221d439b41d019ebe0e527be048d1
                        this.cX <= currentBlockRightBorder) { //hit from top
                 this.moveSpeedY = -this.moveSpeedY;
                 return true;
             } else if (this.rightBorder >= currentBlock.x &&
                        this.rightBorder <= currentBlockRightBorder &&
-<<<<<<< HEAD
-                       this.cY - this.rad/2 >= currentBlock.y &&
-                       this.cY + this.rad/2 <= currentBlockBottomBorder) { //hit from left
-=======
                        this.cY >= currentBlock.y &&
                        this.cY <= currentBlockBottomBorder) { //hit from left
->>>>>>> 7e5eea8fb4a221d439b41d019ebe0e527be048d1
                 this.moveSpeedX = -this.moveSpeedX;
                 return true;
             } else if (this.leftBorder <= currentBlockRightBorder &&
                        this.leftBorder >= currentBlock.x &&
-<<<<<<< HEAD
-                       this.cY - this.rad/2 >= currentBlock.y &&
-                       this.cY + this.rad/2 <= currentBlockBottomBorder) { //hit from right
-=======
                        this.cY >= currentBlock.y &&
                        this.cY <= currentBlockBottomBorder) { //hit from right
->>>>>>> 7e5eea8fb4a221d439b41d019ebe0e527be048d1
                 this.moveSpeedX = -this.moveSpeedX;
                 return true;
             }

@@ -28,7 +28,9 @@ var balls = [],
     powerupHeight,
     powerupWidth,
     lastHit,
-    blocksFieldHeight;
+    blocksFieldHeight,
+    score = Math.round(0, 2);
+
 
 var powerupKinds = ["Longer", "Shorter", "Double", "Triple", "Octal", "SpeedUP", "SpeedDOWN", "Guard"];
 
@@ -54,6 +56,7 @@ window.onload = function() {
 
     reader.onreadystatechange = function(){
         if (reader.readyState == 4) {
+
             blocksFieldHeight = Math.ceil(blocks[blocks.length - 1]);
             startGame();
         }
@@ -66,6 +69,12 @@ window.onload = function() {
 
             addListeners();
             startScreen();
+        }
+    function scoreView() {
+            canvasCtx.font = 'bold 32px "Palatino Linotype", "Book Antiqua", Palatino, serif';
+            canvasCtx.textAlign = 'left';  
+            canvasCtx.fillStyle = 'white';
+            canvasCtx.fillText("Score: " + "" + Math.round(score), 20, 570); 
     }
 
     function startScreen() {
@@ -135,8 +144,14 @@ window.onload = function() {
             blocks = generateBlocks("level") + levelNumber.toString();
             player.lives = 3;
             startGame();
-    };
-}
+        };
+    }
+    function scoreView() {
+            canvasCtx.font = 'bold 32px fnt , "Palatino Linotype", "Book Antiqua", Palatino, serif';
+            canvasCtx.textAlign = 'left';  
+            canvasCtx.fillStyle = 'white';
+            canvasCtx.fillText("Score: " + "" + Math.round(score), 20, 570); 
+    }
     function addListeners() {
         document.body.addEventListener('keydown', function(e) {
             if (!e) {
@@ -186,19 +201,18 @@ window.onload = function() {
         if (player.lives >= 0) {
         player.draw(canvasCtx);
         player.move();
-        
+        scoreView();
+        score -= 0.01;
         /*Intentional, do not edit*/
         for (var i = 0; i < balls.length; i++) {
             balls[i].draw(canvasCtx);
             balls[i].move(i);
         }
-
         for (var i in blocks) {
             for (var b in blocks[i]) {
                 blocks[i][b].draw(canvasCtx);
             }
         }
-
         for (var i in powerups) {
             if (powerups[i].active) {
                 powerups[i].draw(canvasCtx);
@@ -318,7 +332,9 @@ function Block(type, x, y, hardness, theCanvas) {
         if (this.powerUP > Math.random()) {
             powerups.push(new PowerUp(this.x + this.width / 2, this.y - this.height / 2, powerupKinds[Math.floor(Math.random() * powerupKinds.length)], theCanvas));
             console.log(powerups);
+            score += 500;
         }
+        score += 100;
     };
 
     this.init();
