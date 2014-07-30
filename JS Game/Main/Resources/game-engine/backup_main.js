@@ -12,89 +12,72 @@ function randomSign(argument) {
     var plusOrMinus = Math.random() < 0.5 ? -1 : 1;
     return plusOrMinus;
 }
-
 var balls = [],
     blocks = [],
     powerups = [],
-    guard = null,
+    balls = [],
     player,
-    blocksFieldHeight,
-    score = Math.round(0, 2);
-
+    guard = null,
+    blocksFieldHeight;
 var powerupKinds = ["Longer", "Shorter", "Double", "Triple", "Octal", "SpeedUP", "SpeedDOWN", "Guard"];
-
 window.onload = function() {
     var theCanvas = document.getElementById('field'),
+<<<<<<< HEAD
         canvasCtx = theCanvas.getContext('2d');
-
+=======
+        canvasCtx = theCanvas.getContext('2d'),
+        started = false;
+    
+>>>>>>> 2ad891c9f9e59b3d23e879a10b43b613fee2741c
     theCanvas.height = window.innerHeight - 20;
     theCanvas.width = (theCanvas.height);
-
     canvasCtx.fillStyle = 'red';
     canvasCtx.strokeStyle = 'black';
+<<<<<<< HEAD
+    reader.onreadystatechange = function() {
+        field = reader.responseText;
+        //console.log(reader.responseText);
+        //initialize player envelope and ball
+        blocks = generateBlocks();
+        //extract blocks bottom border coordinates
+        blocksFieldHeight = Math.ceil(blocks[blocks.length - 1]);
+        blocks.splice(blocks.length - 1, 1);
+        player = new Envelope(theCanvas.width / 2, theCanvas.height - 100, 3, theCanvas);
+        balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas, ((theCanvas.height + theCanvas.width) / (120 * 6))));
+        console.log(blocks[2]);
+        addListeners();
+        startGame();
+=======
+
 
     reader.onreadystatechange = function () {
+        if (reader.responseText.length > 0) {
+            if (!started) {
+                field = reader.responseText;
+                //console.log(reader.responseText);
 
-        if (reader.readyState === 4 && reader.status === 200) {
-            field = reader.responseText;
-            //console.log(reader.responseText);
+                //initialize player envelope and ball
+                blocks = generateBlocks();
 
-            //initialize player envelope and ball
-            blocks = generateBlocks();
+                //extract blocks bottom border coordinates
+                blocksFieldHeight = Math.ceil(blocks[blocks.length - 1]);
+                blocks.splice(blocks.length - 1, 1);
 
-            //extract blocks bottom border coordinates
-            blocksFieldHeight = Math.ceil(blocks[blocks.length - 1]);
-            blocks.splice(blocks.length - 1, 1);
+                player = new Envelope(theCanvas.width / 2, theCanvas.height - 100, 3, theCanvas, canvasCtx);
+                balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas, 5)); //((theCanvas.height + theCanvas.width) / (120 * 6))
 
-            player = new Envelope(theCanvas.width / 2, theCanvas.height - 100, 3, theCanvas, canvasCtx);
-            balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas, 5)); //((theCanvas.height + theCanvas.width) / (120 * 6))
+                addListeners();
+                startGame();
 
-            addListeners();
-            startScreen();
-
-            console.log(blocks[0].length);
-            console.log(blocks[1].length);
+                started = true;
+                console.log(blocks[0].length);
+                console.log(blocks[1].length);
+                console.log(blocks[2].length);
+            }
         }
+>>>>>>> 2ad891c9f9e59b3d23e879a10b43b613fee2741c
     };
-    function scoreView() {
-            canvasCtx.font = 'bold 32px "Palatino Linotype", "Book Antiqua", Palatino, serif';
-            canvasCtx.textAlign = 'left';  
-            canvasCtx.fillStyle = 'white';
-            canvasCtx.fillText("Score: " + "" + Math.round(score), 20, 570); 
-    }
 
-    function startScreen() {
-        var startButton = document.createElement('button'),
-            heading = document.createElement('h1');
-
-        document.body.appendChild(startButton);
-        document.body.appendChild(heading);
-
-        startButton.className = 'button';
-        startButton.innerHTML = 'START';
-
-        heading.className = 'heading';
-        heading.innerHTML = 'ALPHABOUNCE';
-
-        document.body.style.background = 'url(Resources/images/game-background.jpg)';
-        document.body.style.backgroundSize = 'cover';
-        theCanvas.style.background = 'url(Resources/images/canvas-background2.png)';
-		theCanvas.style.backgroundSize = 'cover';
-		
-        startButton.onclick = function () {
-            document.body.removeChild(startButton);
-            document.body.removeChild(heading);
-
-            startGame();
-        };
-    }
-     function scoreView() {
-            canvasCtx.font = 'bold 32px "Palatino Linotype", "Book Antiqua", Palatino, serif';
-            canvasCtx.textAlign = 'left';  
-            canvasCtx.fillStyle = 'white';
-            canvasCtx.fillText("Score: " + "" + Math.round(score), 20, 570); 
-    }
-    
     function addListeners() {
         document.body.addEventListener('keydown', function(e) {
             if (!e) {
@@ -119,7 +102,6 @@ window.onload = function() {
                     break;
             }
         });
-
         document.body.addEventListener('keyup', function(e) {
             if (!e) {
                 e = window.event;
@@ -141,23 +123,19 @@ window.onload = function() {
 
     function startGame() {
         canvasCtx.clearRect(0, 0, theCanvas.width, theCanvas.height);
-        scoreView();
         player.draw(canvasCtx);
         player.move();
-        score -= 0.01;
-
         /*Intentional, do not edit*/
         for (var i = 0; i < balls.length; i++) {
             balls[i].draw(canvasCtx);
             balls[i].move(i);
         }
-
         for (var i in blocks) {
+            //blocks[i].draw(canvasCtx);
             for (var b in blocks[i]) {
                 blocks[i][b].draw(canvasCtx);
             }
         }
-
         for (var i in powerups) {
             if (powerups[i].active) {
                 powerups[i].draw(canvasCtx);
@@ -165,7 +143,10 @@ window.onload = function() {
                 powerups[i].checkPlayerCollision(player);
             }
         }
+<<<<<<< HEAD
+=======
         
+>>>>>>> 2ad891c9f9e59b3d23e879a10b43b613fee2741c
         if (guard !== null) {
             guard.draw(canvasCtx);
         }
@@ -174,7 +155,6 @@ window.onload = function() {
         // }
         // console.log(balls.length);
         /*Debug Powerups*/
-
         requestAnimationFrame(startGame);
     }
 };
@@ -182,24 +162,27 @@ window.onload = function() {
 function Envelope(x, y, lives, theCanvas, context) {
     this.x = x;
     this.y = y;
+    this.elongated = 0;
     this.width = theCanvas.width / 8;
     this.height = theCanvas.height / 36;
     this.moveSpeed = 0;
     //this.currentSpeed = ((theCanvas.width + theCanvas.height) / (120 * 2)); //some workaround for smooth animation with some initial value
     this.currentSpeed = 8; //some workaround for smooth animation with some initial value
     this.lives = lives;
-
     this.sticky = true;
+<<<<<<< HEAD
+    this.image; //when we include graphix
+=======
     this.elongated = 0; //???
     
     var image = new Image();
     image.src = 'Resources/images/envelope.png';
 
+>>>>>>> 2ad891c9f9e59b3d23e879a10b43b613fee2741c
     this.draw = function(canvasCtx) {
         canvasCtx.drawImage(image, this.x, this.y, this.width, this.height);
         canvasCtx.lineWidth = 2; //Temp
     };
-
     this.move = function() {
         //envelope border collision check
         if (this.x <= 0) {
@@ -207,7 +190,6 @@ function Envelope(x, y, lives, theCanvas, context) {
         } else if (this.x + this.width >= theCanvas.width) {
             this.x = theCanvas.width - this.width;
         }
-
         this.x += this.moveSpeed;
     };
 }
@@ -218,13 +200,12 @@ function Block(type, x, y, hardness, theCanvas) {
     this.width = theCanvas.width / 18;
     this.height = theCanvas.height / 30;
     this.hardness = hardness;
-
     this.init = function() {
         switch (type) {
             case "n": //Normal block
                 this.health = 1; // Hits Required for kill
                 this.fillColor = "#E0E"; //Color
-                this.hittable = true;
+                this.hittable = true; // 
                 this.powerUP = 0.15;
                 break;
             case "p": // PowerUP dropper
@@ -258,24 +239,25 @@ function Block(type, x, y, hardness, theCanvas) {
                 this.fillColor = "#794000";
         }
     };
-
     this.draw = function(canvasCtx) {
         canvasCtx.beginPath();
         canvasCtx.fillStyle = this.fillColor;
         canvasCtx.rect(this.x, this.y, this.width, this.height);
         canvasCtx.fill();
+        //canvasCtx.lineWidth = 2;
         canvasCtx.stroke();
     };
-
-    this.destroy = function (collection, index) {
+    this.destroy = function(collection, index) {
         collection.splice(index, 1);
         if (this.powerUP > Math.random()) {
+<<<<<<< HEAD
+            powerups.push(new PowerUp(this.x + this.width/2, this.y-this.height/2 , powerupKinds[Math.floor(Math.random() * powerupKinds.length)], theCanvas));
+=======
             powerups.push(new PowerUp(this.x + this.width / 2, this.y - this.height / 2, powerupKinds[Math.floor(Math.random() * powerupKinds.length)], theCanvas));
+>>>>>>> 2ad891c9f9e59b3d23e879a10b43b613fee2741c
             console.log(powerups);
         }
-        score += 100;
     };
-
     this.init();
 }
 
@@ -284,75 +266,90 @@ function PowerUp(x, y, kind, theCanvas) {
     this.y = y;
     this.height = theCanvas.height / 12;
     this.width = theCanvas.width / 45;
-
     this.active = true;
-
     this.init = function() {
         switch (kind) {
             case "Longer":
-                this.activate = function() {
-                    if (player.elongated < 2) {
-                        player.width = player.width * 1.5;
-                        player.elongated += 1;
-                    }
-                };
-                this.fillColor = "#50F";
-                break;
-
+                {
+                    this.activate = function() {
+                        if (player.elongated < 2) {
+                            player.width = player.width * 1.5;
+                            player.elongated += 1;
+                        }
+                    };
+                    this.fillColor = "#50F";
+                    break;
+                }
             case "Shorter":
-                this.activate = function() {
-                    if (player.elongated > -2) {
-                        player.width = player.width / 1.5;
-                        player.elongated -= 1;
-                    }
-                };
-                this.fillColor = "#F05";
-                break;
-
+                {
+                    this.activate = function() {
+                        if (player.elongated > -2) {
+                            player.width = player.width / 1.5;
+                            player.elongated -= 1;
+                        }
+                    };
+                    this.fillColor = "#F05";
+                    break;
+                }
             case "Double":
-                this.activate = function() {
-                    for (var ball in balls) {
-                        balls[ball].multiply(2);
-                    }
-                };
-                this.fillColor = "#9A5";
-                break;
-
+                {
+                    this.activate = function() {
+                        for (var ball in balls) {
+                            balls[ball].multiply(2);
+                        }
+                    };
+                    this.fillColor = "#9A5";
+                    break;
+                }
             case "Triple":
-                this.activate = function() {
-                    balls[0].multiply(3);
-                };
-                this.fillColor = "#FA5";
-                break;
-
+                {
+                    this.activate = function() {
+                        balls[0].multiply(3);
+                    };
+                    this.fillColor = "#FA5";
+                    break;
+                }
             case "Octal":
+<<<<<<< HEAD
+                {
+                    this.activate = function() {
+                        balls[0].multiply(8);
+                    };
+                    this.fillColor = "#dada";
+                    break;
+                }
+=======
                 this.activate = function() {
                     balls[0].multiply(8);
                 };
                 this.fillColor = "#dad";
                 break;
 
+>>>>>>> 2ad891c9f9e59b3d23e879a10b43b613fee2741c
             case "SpeedUP":
-                this.activate = function() {
-                    for (var ball in balls) {
-                        balls[ball].moveSpeedX = balls[ball].moveSpeedX * 1.5;
-                        balls[ball].moveSpeedY = balls[ball].moveSpeedY * 1.5;
-                        balls[ball].mainSpeed = balls[ball].mainSpeed * 1.5;
-                    }
-                };
-                this.fillColor = "#10AF70";
-                break;
-
+                {
+                    this.activate = function() {
+                        for (var ball in balls) {
+                            balls[ball].moveSpeedX = balls[ball].moveSpeedX * 1.5;
+                            balls[ball].moveSpeedY = balls[ball].moveSpeedY * 1.5;
+                            balls[ball].mainSpeed = balls[ball].mainSpeed * 1.5;
+                        }
+                    };
+                    this.fillColor = "#10AF70";
+                    break;
+                }
             case "SpeedDOWN":
-                this.activate = function() {
-                    for (var ball in balls) {
-                        balls[ball].moveSpeedX = balls[ball].moveSpeedX / 1.5;
-                        balls[ball].moveSpeedY = balls[ball].moveSpeedY / 1.5;
-                        balls[ball].mainSpeed = balls[ball].mainSpeed / 1.5;
-                    }
-                };
-                this.fillColor = "#100F70";
-                break;
+                {
+                    this.activate = function() {
+                        for (var ball in balls) {
+                            balls[ball].moveSpeedX = balls[ball].moveSpeedX / 1.5;
+                            balls[ball].moveSpeedY = balls[ball].moveSpeedY / 1.5;
+                            balls[ball].mainSpeed = balls[ball].mainSpeed / 1.5;
+                        }
+                    };
+                    this.fillColor = "#100F70";
+                    break;
+                }
                 // case "Fire":
                 //     {
                 //         this.activate = function() {
@@ -364,41 +361,40 @@ function PowerUp(x, y, kind, theCanvas) {
                 //         break;
                 //     }
             case "Guard":
-                this.activate = function() {
-                    guard = new Block("g", 0, theCanvas.height - 45, 90 , theCanvas);
-                    guard.width = theCanvas.width;
-                    guard.height = 30;
-
-                    setTimeout(function() {
-                        guard = null;
-                    }, 15000);
-                };
-                this.fillColor = "#0FCDFF";
-                break;
-
+                {
+                    this.activate = function() {
+                        guard = new Block("g", 0, theCanvas.height - 45, 90, theCanvas);
+                        guard.width = theCanvas.width;
+                        guard.height = 30;
+                        setTimeout(function() {
+                            guard = null;
+                        }, 15000);
+                    };
+                    this.fillColor = "#0FCDFF";
+                    break;
+                }
             default:
-                this.activate = function() {
-                    console.log("I'm a broken powerup!");
-                };
-                this.fillColor = 'black';
-                break;
+                {
+                    this.activate = function() {
+                        console.log("I'm a broken powerup!");
+                    };
+                    this.fillColor = 'black';
+                    break;
+                }
         }
     };
-
+    this.init();
     this.move = function() {
         if (this.active) {
             this.y += 3;
         }
     };
-
     this.checkPlayerCollision = function(player) {
-        if (this.x >= player.x && this.x <= (player.x + player.width) &&
-            this.y + this.height <= player.y + player.height && this.y + this.height > player.y) {
+        if (this.x >= player.x && this.x <= (player.x + player.width) && this.y + this.height <= player.y + player.height && this.y + this.height > player.y) {
             this.activate();
             this.destroy();
         }
     };
-
     this.destroy = function() {
         this.active = false;
         this.x = 0;
@@ -407,15 +403,12 @@ function PowerUp(x, y, kind, theCanvas) {
         this.height = 0;
         this.activate = null;
     };
-
     this.draw = function(canvasCtx) {
         canvasCtx.beginPath();
         canvasCtx.fillStyle = this.fillColor;
         canvasCtx.rect(this.x, this.y, this.width, this.height);
         canvasCtx.fill();
     };
-
-    this.init();
 }
 
 function Ball(cX, cY, rad, theCanvas, mainSpeed) {
@@ -423,54 +416,57 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
     this.cY = cY;
     this.rad = rad;
     this.mainSpeed = mainSpeed;
+<<<<<<< HEAD
+=======
 
     var image = new Image();
     image.src = 'Resources/images/ball.png';
 
+>>>>>>> 2ad891c9f9e59b3d23e879a10b43b613fee2741c
     if (!player.sticky) {
-        this.moveSpeedX = (Math.floor(Math.random() * this.mainSpeed*2)) * randomSign();
-        this.moveSpeedY = (this.mainSpeed*2 - Math.abs(this.moveSpeedX)) * randomSign();
-    } else{
+        this.moveSpeedX = (Math.floor(Math.random() * this.mainSpeed * 2)) * randomSign();
+        this.moveSpeedY = (this.mainSpeed * 2 - Math.abs(this.moveSpeedX)) * randomSign();
+    } else {
         this.moveSpeedX = 0;
         this.moveSpeedY = 0;
     }
-
     this.multiply = function(times) {
         for (var i = 0; i < times; i++) {
             balls.push(new Ball(this.cX, this.cY, this.rad, theCanvas, this.mainSpeed));
         }
     };
-
     this.draw = function(canvasCtx) {
+<<<<<<< HEAD
+        canvasCtx.beginPath();
+        canvasCtx.arc(this.cX, this.cY, this.rad, 0, 2 * Math.PI); // Makes Arc of 2*pi = Circle
+        canvasCtx.fill(); // Fills it
+        canvasCtx.stroke(); // Adds the black outline
+=======
         canvasCtx.drawImage(image, this.cX, this.cY);
+>>>>>>> 2ad891c9f9e59b3d23e879a10b43b613fee2741c
     };
-
     this.move = function(i) {
-        this.cX += this.moveSpeedX;
-        this.cY += this.moveSpeedY;
-        this.checkCollision(i);
+        this.cX += this.moveSpeedX; // removed switch, instead just set movespeed variable to negative.
+        this.cY += this.moveSpeedY; // removed switch, instead just set movespeed variable to negative.
+        this.checkCollision(i); // checks if the ball collides with anything
     };
-
     this.checkCollision = function(i) {
         this.rightBorder = this.cX + this.rad;
         this.leftBorder = this.cX - this.rad;
         this.topBorder = this.cY - this.rad;
         this.bottomBorder = this.cY + this.rad;
-
         //playfield border and envelope collision checks
         if (this.leftBorder <= 0) {
             this.moveSpeedX = -this.moveSpeedX; // sets variable to move right
         } else if (this.rightBorder >= theCanvas.width) {
             this.moveSpeedX = -this.moveSpeedX; //sets variable to move left
         }
-
         /*Bug : Somethimes the ball can go fast enough as to exit the boundaries of the level, leaving it glitched*/
-        if(guard !== null){
-            if (this.bottomBorder >= guard.y+guard.height) {
-                this.moveSpeedY = this.moveSpeedY*-1;
+        if (guard !== null) {
+            if (this.bottomBorder >= guard.y + guard.height) {
+                this.moveSpeedY = this.moveSpeedY * -1;
             }
         }
-
         if (this.topBorder <= 0) {
             this.moveSpeedY = -this.moveSpeedY; // sets variable to move down 
         } else if (this.cX >= player.x && this.cX <= (player.x + player.width) && this.bottomBorder >= player.y && this.bottomBorder <= player.y + player.height) {
@@ -485,7 +481,6 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
             } else {
                 this.moveSpeedX = this.mainSpeed * -2 * (1 - ((this.cX - player.x) / (player.width / 2))); //The values for X and Y movespeed are reciproc and equal 2* movespeed. This chooses direction dynamically.
                 this.moveSpeedY = -this.mainSpeed * 2 * (1 - Math.abs(1 - ((this.cX - player.x) / (player.width / 2)))); // player movement
-
                 if (Math.abs(this.moveSpeedX) > this.mainSpeed * 1.5) {
                     this.moveSpeedX = this.mainSpeed * 1.5 * signum(this.moveSpeedX);
                     this.moveSpeedY = this.mainSpeed * 0.5 * signum(this.moveSpeedY);
@@ -497,101 +492,133 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
             } else {
                 player.lives -= 1;
                 player.sticky = true;
-                balls[0] = new Ball(player.x + (player.width / 2) - this.rad, (player.y - 7), 7, theCanvas, 5); // Replaces ball that spawns at player location when it's destroyed.
+                balls[0] = new Ball(player.x + (player.width / 2) - this.rad, (player.y - 7), 7, theCanvas, ((theCanvas.height + theCanvas.width) / (120 * 6))); // Replaces ball that spawns at player location when it's destroyed.
             }
         }
-
         this.checkBlockCollision();
     };
-
-    this.checkBlockCollision = function () {
+    this.checkBlockCollision = function() {
         this.rightBorder = this.cX + this.rad;
         this.leftBorder = this.cX - this.rad;
         this.topBorder = this.cY - this.rad;
         this.bottomBorder = this.cY + this.rad;
-
         var currentBlock,
             currentBlockRightBorder,
             currentBlockBottomBorder,
-            blockHit = false,
-            index;
-
-        if (this.topBorder <= blocksFieldHeight + 10) {
-            if (this.leftBorder <= theCanvas.width / 2) { //first quadrant check
-                index = -1;
-
+            index = -1,
+            blockHit = false;
+        if (this.topBorder <= blocksFieldHeight) {
+            if (this.leftBorder <= theCanvas.width / 3) { //first quadrant check
                 for (var b in blocks[0]) { //blocks[0] == first quadrant
                     currentBlock = blocks[0][b];
                     currentBlockRightBorder = currentBlock.x + currentBlock.width;
                     currentBlockBottomBorder = currentBlock.y + currentBlock.height;
-                        
                     blockHit = this.changeDirections(currentBlock, currentBlockBottomBorder, currentBlockRightBorder);
-                        
                     if (blockHit) {
                         currentBlock.health -= 1;
                         index = b;
                         blockHit = false;
                     }
-                }
-
-                if (index >= 0) {
-                    if (blocks[0][index].health <= 0) {
-                        blocks[0][index].destroy(blocks[0], index);
+                    if (index >= 0) {
+                        if (blocks[0][index].health <= 0) {
+                            blocks[0][index].destroy(blocks[0], index);
+                        }
                     }
                 }
-            }
-
-            if (this.rightBorder >= theCanvas.width / 3) {
-                index = -1;
-
+            } else if (this.rightBorder > theCanvas.width / 3 && this.leftBorder <= theCanvas.width - (theCanvas.width / 3)) {
                 for (var b in blocks[1]) { //blocks[1] == second quadrant
                     currentBlock = blocks[1][b];
                     currentBlockRightBorder = currentBlock.x + currentBlock.width;
                     currentBlockBottomBorder = currentBlock.y + currentBlock.height;
-
                     blockHit = this.changeDirections(currentBlock, currentBlockBottomBorder, currentBlockRightBorder);
-
                     if (blockHit) {
-                        currentBlock.health -= 1;
+                        currentBlock.hardness -= 1;
                         index = b;
                         blockHit = false;
                     }
                 }
-
                 if (index >= 0) {
-                    if (blocks[1][index] !== undefined) {
-                        if (blocks[1][index].health <= 0) {
-                            blocks[1][index].destroy(blocks[1], index);
-                        }
-                    }                    
+                    if (blocks[1][index].hardness <= 0) {
+                        blocks[1][index].destroy(blocks[1], index);
+                    }
                 }
+            } else if (this.rightBorder > theCanvas.width - (theCanvas.width / 3)) {
+                for (var b in blocks[2]) { //blocks[2] == third quadrant
+                    currentBlock = blocks[2][b];
+                    currentBlockRightBorder = currentBlock.x + currentBlock.width;
+                    currentBlockBottomBorder = currentBlock.y + currentBlock.height;
+                    blockHit = this.changeDirections(currentBlock, currentBlockBottomBorder, currentBlockRightBorder);
+<<<<<<< HEAD
+=======
+                    console.log(currentBlock);
 
+>>>>>>> 2ad891c9f9e59b3d23e879a10b43b613fee2741c
+                    if (blockHit) {
+                        currentBlock.health -= 1;
+                        currentBlock.hardness -= 1;
+                        index = b;
+                        blockHit = false;
+                    }
+                }
+                //if we have a block hit - destroy it
+                if (index >= 0) {
+                    if (blocks[2][index].hardness <= 0) {
+                        blocks[2][index].destroy(blocks[2], index);
+                    }
+                }
             }
         }
     };
-
-    this.changeDirections = function (currentBlock, currentBlockBottomBorder, currentBlockRightBorder) {
-        if (this.topBorder <= currentBlockBottomBorder && this.topBorder >= currentBlock.y &&
-            this.cX >= currentBlock.x && this.cX <= currentBlockRightBorder) { //hit from bellow
-
+    this.changeDirections = function(currentBlock, currentBlockBottomBorder, currentBlockRightBorder) {
+        if (this.topBorder <= currentBlockBottomBorder && this.topBorder >= currentBlock.y && this.cX >= currentBlock.x && this.cX <= currentBlockRightBorder) { //hit from bellow
             this.moveSpeedY = -this.moveSpeedY;
             return true;
-
-        } else if (this.bottomBorder >= currentBlock.y && this.bottomBorder <= currentBlockBottomBorder &&
-                   this.cX >= currentBlock.x && this.cX <= currentBlockRightBorder) { //hit from top
-
+        } else if (this.bottomBorder >= currentBlock.y && this.bottomBorder <= currentBlockBottomBorder && this.cX >= currentBlock.x && this.cX <= currentBlockRightBorder) { //hit from top
             this.moveSpeedY = -this.moveSpeedY;
             return true;
-
-        } else if (this.rightBorder >= currentBlock.x && this.rightBorder <= currentBlockRightBorder &&
-                   this.cY >= currentBlock.y && this.cY <= currentBlockBottomBorder) { //hit from left
-
+        } else if (this.rightBorder >= currentBlock.x && this.rightBorder <= currentBlockRightBorder && this.cY >= currentBlock.y && this.cY <= currentBlockBottomBorder) { //hit from left
             this.moveSpeedX = -this.moveSpeedX;
             return true;
-
-        } else if (this.leftBorder <= currentBlockRightBorder && this.leftBorder >= currentBlock.x &&
-                   this.cY >= currentBlock.y && this.cY <= currentBlockBottomBorder) { //hit from right
-
+        } else if (this.leftBorder <= currentBlockRightBorder && this.leftBorder >= currentBlock.x && this.cY >= currentBlock.y && this.cY <= currentBlockBottomBorder) { //hit from right
+            this.moveSpeedX = -this.moveSpeedX;
+            return true;
+        }
+        if (index >= 0) {
+            if (blocks[1][index].health <= 0) {
+                blocks[1][index].destroy(blocks[1], index);
+            }
+        }
+        if (this.rightBorder > theCanvas.width - (theCanvas.width / 3)) {
+            for (var b in blocks[2]) { //blocks[2] == third quadrant
+                currentBlock = blocks[2][b];
+                currentBlockRightBorder = currentBlock.x + currentBlock.width;
+                currentBlockBottomBorder = currentBlock.y + currentBlock.height;
+                blockHit = this.changeDirections(currentBlock, currentBlockBottomBorder, currentBlockRightBorder);
+                if (blockHit) {
+                    currentBlock.health -= 1;
+                    index = b;
+                    blockHit = false;
+                }
+            }
+            //if we have a block hit - destroy it
+            if (index >= 0) {
+                if (blocks[2][index].health <= 0) {
+                    blocks[2][index].destroy(blocks[2], index);
+                }
+            }
+        }
+    };
+    this.changeDirections = function(currentBlock, currentBlockBottomBorder, currentBlockRightBorder) {
+        if (this.topBorder <= currentBlockBottomBorder && this.topBorder >= currentBlock.y && this.cX >= currentBlock.x && this.cX <= currentBlockRightBorder) { //hit from bellow
+            this.moveSpeedY = -this.moveSpeedY;
+            return true;
+        } else if (this.bottomBorder >= currentBlock.y && this.bottomBorder <= currentBlockBottomBorder && this.cX >= currentBlock.x && this.cX <= currentBlockRightBorder) { //hit from top
+            this.moveSpeedY = -this.moveSpeedY;
+            return true;
+        } else if (this.rightBorder >= currentBlock.x && this.rightBorder <= currentBlockRightBorder && this.cY >= currentBlock.y && this.cY <= currentBlockBottomBorder) { //hit from left
+            this.moveSpeedX = -this.moveSpeedX;
+            return true;
+        } else if (this.leftBorder <= currentBlockRightBorder && this.leftBorder >= currentBlock.x && this.cY >= currentBlock.y && this.cY <= currentBlockBottomBorder) { //hit from right
             this.moveSpeedX = -this.moveSpeedX;
             return true;
         }
