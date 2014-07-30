@@ -18,7 +18,9 @@ var balls = [],
     powerups = [],
     guard = null,
     score = Math.round(0, 2),
+    scoreIcon,
     player,
+    playerLivesIcon,
     playerMovespeed,
     playerWidth,
     playerHeight,
@@ -43,13 +45,22 @@ window.onload = function() {
     blockHeight = theCanvas.height / 30;
     blockWidth = theCanvas.width / 18;
     ballSpeed = (theCanvas.width + theCanvas.height) / (120 * 2); // multiplied by the seconds it takes the ball to travel across the screen
+
     playerHeight = theCanvas.height / 36;
     playerWidth = theCanvas.width / 7;
     playerMovespeed = theCanvas.width / 60 * 1;
+
     powerupHeight = theCanvas.height / 40;
     powerupWidth = theCanvas.width / 20;
+
     levelNumber = 0;
-    
+
+    scoreIcon = new Image();
+    playerLivesIcon = new Image();
+
+    scoreIcon.src = 'Resources/images/scoreIcon.png';
+    playerLivesIcon.src = 'Resources/images/lives-icon.png';
+
     reader.onreadystatechange = function () {
 
         if (reader.readyState === 4 && reader.status === 200) {
@@ -92,7 +103,7 @@ window.onload = function() {
 
         document.body.style.background = 'url(Resources/images/game-background.jpg)';
         document.body.style.backgroundSize = 'cover';
-        theCanvas.style.background = 'url(Resources/images/canvas-background2.png)';
+        theCanvas.style.background = 'url(Resources/images/canvas-background.png)';
 		theCanvas.style.backgroundSize = 'cover';
 		
         startButton.onclick = function () {
@@ -102,11 +113,22 @@ window.onload = function() {
     }
 
     function scoreView() {
-        canvasCtx.font = '1.5em fnt, \'fnt\', Arial';
+        canvasCtx.font = '1em fnt, \'fnt\', Arial';
         canvasCtx.textAlign = 'left';
         canvasCtx.fillStyle = '#fff';
 
-        canvasCtx.fillText('Score: ' + Math.round(score), 20, theCanvas.height - 30);
+        canvasCtx.drawImage(scoreIcon, theCanvas.width - 150, theCanvas.height - 30);
+        canvasCtx.fillText('Score: ' + Math.round(score), theCanvas.width - 130, theCanvas.height - 17);
+    }
+
+    function showLives() {
+        var currentDrawPos = 10;
+
+        for (var k = 0; k < player.lives; k++) {
+            canvasCtx.drawImage(playerLivesIcon, currentDrawPos, theCanvas.height - 20);
+
+            currentDrawPos += 35;
+        }
     }
 
     function gameOver() {
@@ -209,6 +231,7 @@ window.onload = function() {
 
         if (player.lives >= 0) {
             scoreView();
+            showLives();
 
             player.draw(canvasCtx);
             player.move();
@@ -571,11 +594,11 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
 
         //playfield border and envelope collision checks
         if (this.leftBorder <= 0) {
-            this.moveSpeedX = -this.moveSpeedX;
-            this.cX = 0 + this.rad ; // sets variable to move right
+            this.moveSpeedX = -this.moveSpeedX; // sets variable to move right
+            this.cX = 0 + this.rad;
         } else if (this.rightBorder >= theCanvas.width) {
             this.moveSpeedX = -this.moveSpeedX; //sets variable to move left
-            this.cX = theCanvas.width-this.rad*2;
+            this.cX = theCanvas.width - this.rad * 2
         }
 
         /*Bug : Somethimes the ball can go fast enough as to exit the boundaries of the level, leaving it glitched*/

@@ -1,8 +1,11 @@
-﻿/*body {
-    background-image: url('../images/game-background.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-}*/
+﻿@font-face{
+    font-family: fnt;
+    src: url('../Font/bgothm.ttf') format('truetype');
+}
+
+body {
+    font-family: fnt, Arial;
+}
 
 #field {
     display: block;
@@ -13,12 +16,12 @@
 
 .button {
     position: absolute;
-    top: 20%;
     left: 0;
     right: 0;
     margin: 0 auto;
     width: 200px;
     height: 40px;
+    font-family: fnt;
     font-size: 20px;
     color: white;
     background-color: #383960;
@@ -29,7 +32,7 @@
 }
 
     .button:hover {
-        color: tomato;
+        color: #383960;
         background-color: white;
         border-radius: 20px;
         cursor: pointer;
