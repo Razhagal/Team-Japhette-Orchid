@@ -333,6 +333,8 @@ function Block(type, x, y, theCanvas) {
                 this.health = 1;
                 this.fillColor = '#00ff99';
                 this.powerUP = 1;
+                this.sourceX = 0;
+                this.sourceY = 15;
                 break;
             case 'b': //Bonus block
                 this.health = 1;
@@ -605,12 +607,12 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
         if(guard !== null){
             if (this.bottomBorder >= guard.y) {
                 this.moveSpeedY = this.moveSpeedY * (-1);
-                this.cY = 0 + this.rad;
             }
         }
 
         if (this.topBorder <= 0) {
             this.moveSpeedY = -this.moveSpeedY; // sets variable to move down 
+            this.cY = 0 + this.rad;
         } else if (this.cX >= player.x && this.cX <= (player.x + player.width) && this.bottomBorder >= player.y && this.bottomBorder <= player.y + player.height) {
             if (player.sticky) {
                 if (player.x >= 0 && player.x + player.width <= theCanvas.width) {

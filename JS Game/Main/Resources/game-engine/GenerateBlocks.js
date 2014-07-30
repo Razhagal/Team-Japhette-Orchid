@@ -40,6 +40,9 @@ function generateBlocks() {
         } else if (field[letter] === 'l') { //Extra life block
             tmpBlock = new Block('l', width, height, canvas);
             width += canvas.width / 18;
+        } else if (field[letter] === 'p') { //Extra life block
+            tmpBlock = new Block('p', width, height, canvas);
+            width += canvas.width / 18;
         } else if (field[letter] === '\u0020') {
             //Current char is a blank space
             width += canvas.width / 18;
