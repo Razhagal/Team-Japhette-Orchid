@@ -17,6 +17,7 @@ var balls = [],
     blocks = [],
     powerups = [],
     guard = null,
+    score = Math.round(0, 2),
     player,
     playerMovespeed,
     playerWidth,
@@ -28,11 +29,9 @@ var balls = [],
     powerupHeight,
     powerupWidth,
     lastHit,
-    blocksFieldHeight,
-    score = Math.round(0, 2);
+    blocksFieldHeight;
 
-
-var powerupKinds = ["Longer", "Shorter", "Double", "Triple", "Octal", "SpeedUP", "SpeedDOWN", "Guard"];
+var powerupKinds = ['Longer', 'Shorter', 'Double', 'Triple', 'Octal', 'SpeedUP', 'SpeedDOWN', 'Guard'];
 
 window.onload = function() {
     var theCanvas = document.getElementById('field'),
@@ -41,56 +40,55 @@ window.onload = function() {
     theCanvas.height = window.innerHeight - 20;
     theCanvas.width = (theCanvas.height);
 
-    canvasCtx.fillStyle = 'red';
-    canvasCtx.strokeStyle = 'black';
     blockHeight = theCanvas.height / 30;
     blockWidth = theCanvas.width / 18;
-    ballSpeed = (theCanvas.width + theCanvas.height)/(120*2); // multiplied by the seconds it takes the ball to travel across the screen
-    playerHeight = theCanvas.height/36;
-    playerWidth = theCanvas.width/7;
-    playerMovespeed = theCanvas.width/60*1;
-    powerupHeight = theCanvas.height/40;
-    powerupWidth = theCanvas.width/20;
+    ballSpeed = (theCanvas.width + theCanvas.height) / (120 * 2); // multiplied by the seconds it takes the ball to travel across the screen
+    playerHeight = theCanvas.height / 36;
+    playerWidth = theCanvas.width / 7;
+    playerMovespeed = theCanvas.width / 60 * 1;
+    powerupHeight = theCanvas.height / 40;
+    powerupWidth = theCanvas.width / 20;
     levelNumber = 0;
-    initializeGame();
+    
+    reader.onreadystatechange = function () {
 
-    reader.onreadystatechange = function(){
-        if (reader.readyState == 4) {
+        if (reader.readyState === 4 && reader.status === 200) {
+            field = reader.responseText;
+
+            blocks = generateBlocks();
 
             blocksFieldHeight = Math.ceil(blocks[blocks.length - 1]);
-            startGame();
-        }
-    };
-    function initializeGame () {
             blocks.splice(blocks.length - 1, 1);
 
-            player = new Envelope(theCanvas.width / 2, theCanvas.height - 100, 3, theCanvas, canvasCtx);
-            balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas, ballSpeed)); //((theCanvas.height + theCanvas.width) / (120 * 6))
+            initializeGame();
 
-            addListeners();
-            startScreen();
         }
-    function scoreView() {
-            canvasCtx.font = 'bold 32px "Palatino Linotype", "Book Antiqua", Palatino, serif';
-            canvasCtx.textAlign = 'left';  
-            canvasCtx.fillStyle = 'white';
-            canvasCtx.fillText("Score: " + "" + Math.round(score), 20, 570); 
+    };
+
+    function initializeGame() {
+
+        player = new Envelope(theCanvas.width / 2, theCanvas.height - 100, 3, theCanvas, canvasCtx);
+        balls.push(new Ball(player.x + (player.width / 2) - 7, (player.y - 7), 7, theCanvas, ballSpeed));
+
+        addListeners();
+        startScreen();
     }
 
     function startScreen() {
         var startButton = document.createElement('button'),
-        textToDraw = "ALPHABOUNCE v0.1";
+            textToDraw = 'ALPHABOUNCE v0.1';
+
         document.body.appendChild(startButton);
 
         startButton.className = 'button';
         startButton.innerHTML = 'START';
 
-        startButton.style.top = (theCanvas.height/1.4 + 10).toString() + "px";
+        startButton.style.top = (theCanvas.height / 1.4 + 10).toString() + 'px';
 
-        canvasCtx.fillStyle = "#FFFFFF";
-        canvasCtx.font = "3em fnt, 'fnt', Arial";
-        canvasCtx.textAlign = "center"; 
-        canvasCtx.fillText(textToDraw, theCanvas.width/2, theCanvas.height/8, theCanvas.width);
+        canvasCtx.fillStyle = '#FFFFFF';
+        canvasCtx.font = '3em fnt, \'fnt\', Arial';
+        canvasCtx.textAlign = 'center';
+        canvasCtx.fillText(textToDraw, theCanvas.width / 2, theCanvas.height / 8, theCanvas.width);
 
         document.body.style.background = 'url(Resources/images/game-background.jpg)';
         document.body.style.backgroundSize = 'cover';
@@ -99,59 +97,69 @@ window.onload = function() {
 		
         startButton.onclick = function () {
             document.body.removeChild(startButton);
-            blocks = generateBlocks("test");
-            console.log(reader.responseText);
-            //blocks = generateBlocks("level" + levelNumber.toString());
-        };
-    }
-    function gameOver() {
-        var goTexts = ["Game Over", "You Lose!", ":(", "Try Again", "Next!"];
-        var textToDraw = goTexts[Math.floor(Math.random()*goTexts.length)];
-        var startButton = document.createElement('button');
-        document.body.appendChild(startButton);   
-        startButton.className = 'button';
-        startButton.style.top = (theCanvas.height/1.4 + 10).toString() + "px";
-
-        canvasCtx.fillStyle = "#FFFFFF";
-        canvasCtx.font = "3em fnt, 'fnt', Arial";
-        canvasCtx.textAlign = "center"; 
-    
-        startButton.innerHTML = "RETRY";
-        canvasCtx.fillText(textToDraw, theCanvas.width/2, theCanvas.height/8, theCanvas.width);
-        startButton.onclick = function () {
-            document.body.removeChild(startButton);
-            player.lives = 3;
-            startGame();
-        };
-
-    }
-    function levelWon (argument) {
-        var lwTexts = ["You Won!", "Great", "Sucess!", "Good job!"];
-        var textToDraw = lwTexts[Math.floor(Math.random()*lwTexts.length)];
-        var startButton = document.createElement('button');
-        document.body.appendChild(startButton);   
-        startButton.className = 'button';
-        startButton.style.top = (theCanvas.height/1.4 + 10).toString() + "px";
-
-        canvasCtx.fillStyle = "#FFFFFF";
-        canvasCtx.font = "3em fnt, 'fnt', Arial";
-        canvasCtx.textAlign = "center"; 
-    
-        startButton.innerHTML = "Next!";
-        canvasCtx.fillText(textToDraw, theCanvas.width/2, theCanvas.height/8, theCanvas.width);
-        startButton.onclick = function () {
-            document.body.removeChild(startButton);
-            blocks = generateBlocks("level") + levelNumber.toString();
-            player.lives = 3;
             startGame();
         };
     }
+
     function scoreView() {
-            canvasCtx.font = 'bold 32px fnt , "Palatino Linotype", "Book Antiqua", Palatino, serif';
-            canvasCtx.textAlign = 'left';  
-            canvasCtx.fillStyle = 'white';
-            canvasCtx.fillText("Score: " + "" + Math.round(score), 20, 570); 
+        canvasCtx.font = '1.5em fnt, \'fnt\', Arial';
+        canvasCtx.textAlign = 'left';
+        canvasCtx.fillStyle = '#fff';
+
+        canvasCtx.fillText('Score: ' + Math.round(score), 20, theCanvas.height - 30);
     }
+
+    function gameOver() {
+        var goTexts = ['Game Over', 'You Lose!', ':(', 'Try Again', 'Next!'];
+        var textToDraw = goTexts[Math.floor(Math.random() * goTexts.length)];
+        var startButton = document.createElement('button');
+
+        document.body.appendChild(startButton);
+
+        startButton.className = 'button';
+        startButton.style.top = (theCanvas.height / 1.4 + 10).toString() + 'px';
+
+        canvasCtx.font = '3em fnt, \'fnt\', Arial';
+        canvasCtx.textAlign = 'center';
+        canvasCtx.fillStyle = '#fff';
+
+        startButton.innerHTML = 'RETRY';
+
+        canvasCtx.fillText(textToDraw, theCanvas.width / 2, theCanvas.height / 8, theCanvas.width);
+
+        startButton.onclick = function () {
+            document.body.removeChild(startButton);
+
+            player.lives = 3;
+            score = 0;
+            blocks = generateBlocks();
+
+            startGame();
+        };
+    }
+
+    function levelWon(argument) {
+        var lwTexts = ['You Won!', 'Great', 'Sucess!', 'Good job!'];
+        var textToDraw = lwTexts[Math.floor(Math.random() * lwTexts.length)];
+        var startButton = document.createElement('button');
+        document.body.appendChild(startButton);
+        startButton.className = 'button';
+        startButton.style.top = (theCanvas.height / 1.4 + 10).toString() + 'px';
+
+        canvasCtx.fillStyle = '#FFFFFF';
+        canvasCtx.font = '3em fnt, \'fnt\', Arial';
+        canvasCtx.textAlign = 'center';
+
+        startButton.innerHTML = 'Next!';
+        canvasCtx.fillText(textToDraw, theCanvas.width / 2, theCanvas.height / 8, theCanvas.width);
+        startButton.onclick = function () {
+            document.body.removeChild(startButton);
+            blocks = generateBlocks('level') + levelNumber.toString();
+            player.lives = 3;
+            startGame();
+        };
+    }
+
     function addListeners() {
         document.body.addEventListener('keydown', function(e) {
             if (!e) {
@@ -198,44 +206,47 @@ window.onload = function() {
 
     function startGame() {
         canvasCtx.clearRect(0, 0, theCanvas.width, theCanvas.height);
+
         if (player.lives >= 0) {
-        player.draw(canvasCtx);
-        player.move();
-        scoreView();
-        score -= 0.01;
-        /*Intentional, do not edit*/
-        for (var i = 0; i < balls.length; i++) {
-            balls[i].draw(canvasCtx);
-            balls[i].move(i);
-        }
-        for (var i in blocks) {
-            for (var b in blocks[i]) {
-                blocks[i][b].draw(canvasCtx);
+            scoreView();
+
+            player.draw(canvasCtx);
+            player.move();
+
+            /*Intentional, do not edit*/
+            for (var i = 0; i < balls.length; i++) {
+                balls[i].draw(canvasCtx);
+                balls[i].move(i);
             }
-        }
-        for (var i in powerups) {
-            if (powerups[i].active) {
-                powerups[i].draw(canvasCtx);
-                powerups[i].move();
-                powerups[i].checkPlayerCollision(player);
+
+            for (var i in blocks) {
+                for (var b in blocks[i]) {
+                    blocks[i][b].draw(canvasCtx);
+                }
             }
+
+            for (var i in powerups) {
+                if (powerups[i].active) {
+                    powerups[i].draw(canvasCtx);
+                    powerups[i].move();
+                    powerups[i].checkPlayerCollision(player);
+                }
+            }
+
+            if (guard !== null) {
+                guard.draw(canvasCtx);
+            }
+
+            if (blocks[0].length === 0 && blocks[1].length === 0) {
+                levelNumber += 1;
+                levelWon();
+            } else {
+                requestAnimationFrame(startGame);
+            }
+
+        } else {
+            gameOver();
         }
-        if (guard !== null) {
-            guard.draw(canvasCtx);
-        }
-        if (blocks[0].length === 0 && blocks[1].length === 0) {
-            levelNumber += 1;
-            levelWon();
-        }
-        else{
-           requestAnimationFrame(startGame);
-        }
-    }
-    else{
-        gameOver();
-    }
-            
-        
     }
 };
 
@@ -245,7 +256,6 @@ function Envelope(x, y, lives, theCanvas, context) {
     this.width = playerWidth;
     this.height = playerHeight;
     this.moveSpeed = 0;
-    //this.currentSpeed = ((theCanvas.width + theCanvas.height) / (120 * 2)); //some workaround for smooth animation with some initial value
     this.currentSpeed = playerMovespeed; //some workaround for smooth animation with some initial value
     this.lives = lives;
 
@@ -272,68 +282,104 @@ function Envelope(x, y, lives, theCanvas, context) {
     };
 }
 
-function Block(type, x, y, hardness, theCanvas) {
+function Block(type, x, y, theCanvas) {
     this.x = x;
     this.y = y;
     this.width = blockWidth;
     this.height = blockHeight;
-    this.hardness = hardness;
+    this.type = type;
+
+    var sprite = new Image();
+    sprite.src = 'Resources/images/blocks-sprite.png';
+
+    this.sourceX = 0;
+    this.sourceY = 0;
+    this.sourceWidth = 40;
+    this.sourceHeight = 15;
 
     this.init = function() {
         switch (type) {
-            case "n": //Normal block
+            case 'n': //Normal block
                 this.health = 1; // Hits Required for kill
-                this.fillColor = "#E0E"; //Color
-                this.hittable = true;
+                this.fillColor = '#E0E'; //Color
                 this.powerUP = 0.15;
+                this.sourceX = 0;
+                this.sourceY = 0;
                 break;
-            case "p": // PowerUP dropper
+            case 'p': // PowerUP dropper
                 this.health = 1;
-                this.hittable = true;
-                this.fillColor = "#00ff99";
+                this.fillColor = '#00ff99';
                 this.powerUP = 1;
                 break;
-            case "d": // Double hit block
-                this.health = 2;
-                this.hittable = true;
-                this.fillColor = "#FADE00";
-                this.powerUP = 0.02;
-                break;
-            case "t": // Triple hit block
-                this.health = 3;
-                this.hittable = true;
-                this.powerUP = 0.05;
-                this.fillColor = "#DA9900";
-                break;
-            case "g":
-                this.health = 900000;
-                this.hittable = true;
+            case 'b': //Bonus block
+                this.health = 1;
+                this.fillColor = 'blue';
                 this.powerUP = 0;
-                this.fillColor = "red";
+                this.sourceX = 120;
+                this.sourceY = 0;
                 break;
-            case "u":
+            case 'l': //Extra life block
+                this.health = 1;
+                this.fillColor = '#00FF00';
+                this.powerUP = 0;
+                this.sourceX = 80;
+                this.sourceY = 0;
+                break;
+            case 'd': // Double hit block
+                this.health = 2;
+                this.fillColor = '#FADE00';
+                this.powerUP = 0.02;
+                this.sourceX = 40;
+                this.sourceY = 15;
+                break;
+            case 't': // Triple hit block
+                this.health = 3;
+                this.powerUP = 0.05;
+                this.fillColor = '#DA9900';
+                this.sourceX = 40;
+                this.sourceY = 0;
+                break;
+            case 'g': //Guardian block for guard powerUp
+                this.health = 900000;
+                this.powerUP = 0;
+                this.fillColor = 'red';
+                break;
+            case 'u': //Unbreakable (eventually)
                 this.health = 50;
-                this.hittable = true;
                 this.powerUP = 0.3;
-                this.fillColor = "#794000";
+                this.fillColor = '#794000';
+                break;
         }
     };
 
-    this.draw = function(canvasCtx) {
-        canvasCtx.beginPath();
-        canvasCtx.fillStyle = this.fillColor;
-        canvasCtx.rect(this.x, this.y, this.width, this.height);
-        canvasCtx.fill();
-        canvasCtx.stroke();
+    this.draw = function (canvasCtx) {
+        if (this.type === 'g') {
+            canvasCtx.beginPath();
+            canvasCtx.fillStyle = this.fillColor;
+            canvasCtx.rect(this.x, this.y, this.width, this.height);
+            canvasCtx.fill();
+            canvasCtx.stroke();
+        } else {
+            canvasCtx.drawImage(sprite, this.sourceX, this.sourceY, this.sourceWidth, this.sourceHeight,
+                                this.x, this.y, this.width, this.height);
+        }
+        
     };
 
     this.destroy = function (collection, index) {
+        if (collection[index].type === 'l') {
+            player.lives += 1;
+        } else if (collection[index].type === 'b') {
+            score += 500;
+        }
+
         collection.splice(index, 1);
         if (this.powerUP > Math.random()) {
             powerups.push(new PowerUp(this.x + this.width / 2, this.y - this.height / 2, powerupKinds[Math.floor(Math.random() * powerupKinds.length)], theCanvas));
             console.log(powerups);
-            score += 500;
+            score += 50;
         }
+
         score += 100;
     };
 
@@ -343,62 +389,62 @@ function Block(type, x, y, hardness, theCanvas) {
 function PowerUp(x, y, kind, theCanvas) {
     this.x = x;
     this.y = y;
-    this.height = powerupHeight;
     this.width = powerupWidth;
+    this.height = powerupHeight;
     this.image = new Image();
     this.active = true;
 
     this.init = function() {
         switch (kind) {
-            case "Longer":
+            case 'Longer':
                 this.activate = function() {
                     if (player.elongated < 2) {
                         player.width = player.width * 1.5;
                         player.elongated += 1;
                     }
                 };
-                this.fillColor = "#50F";
-                this.image.src = "Resources/images/Expand.png";
+                this.fillColor = '#50F';
+                this.image.src = 'Resources/images/Expand.png';
                 break;
 
-            case "Shorter":
+            case 'Shorter':
                 this.activate = function() {
                     if (player.elongated > -2) {
                         player.width = player.width / 1.5;
                         player.elongated -= 1;
                     }
                 };
-                this.fillColor = "#F05";
-                this.image.src = "Resources/images/Retract.png";
+                this.fillColor = '#F05';
+                this.image.src = 'Resources/images/Retract.png';
                 break;
 
-            case "Double":
+            case 'Double':
                 this.activate = function() {
                     for (var ball in balls) {
                         balls[ball].multiply(1);
                     }
                 };
-                this.fillColor = "#9A5";
-                this.image.src = "Resources/images/2xBalls.png";
+                this.fillColor = '#9A5';
+                this.image.src = 'Resources/images/2xBalls.png';
                 break;
 
-            case "Triple":
+            case 'Triple':
                 this.activate = function() {
                     balls[0].multiply(3);
                 };
-                this.fillColor = "#FA5";
-                this.image.src = "Resources/images/3xBalls.png";
+                this.fillColor = '#FA5';
+                this.image.src = 'Resources/images/3xBalls.png';
                 break;
 
-            case "Octal":
+            case 'Octal':
                 this.activate = function() {
                     balls[0].multiply(8);
                 };
-                this.fillColor = "#dad";
-                this.image.src = "Resources/images/8XBalls2.png";
+                this.fillColor = '#dad';
+                this.image.src = 'Resources/images/8XBalls2.png';
                 break;
 
-            case "SpeedUP":
+            case 'SpeedUP':
                 this.activate = function() {
                     for (var ball in balls) {
                         balls[ball].moveSpeedX = balls[ball].moveSpeedX * 1.5;
@@ -406,11 +452,11 @@ function PowerUp(x, y, kind, theCanvas) {
                         balls[ball].mainSpeed = balls[ball].mainSpeed * 1.5;
                     }
                 };
-                this.fillColor = "#10AF70";
-                this.image.src = "Resources/images/SpeedUP.png";
+                this.fillColor = '#10AF70';
+                this.image.src = 'Resources/images/SpeedUP.png';
                 break;
 
-            case "SpeedDOWN":
+            case 'SpeedDOWN':
                 this.activate = function() {
                     for (var ball in balls) {
                         balls[ball].moveSpeedX = balls[ball].moveSpeedX / 1.5;
@@ -418,20 +464,20 @@ function PowerUp(x, y, kind, theCanvas) {
                         balls[ball].mainSpeed = balls[ball].mainSpeed / 1.5;
                     }
                 };
-                this.fillColor = "#100F70";
-                this.image.src = "Resources/images/SpeedDown.png";
+                this.fillColor = '#100F70';
+                this.image.src = 'Resources/images/SpeedDown.png';
                 break;
-                // case "Fire":
+                // case 'Fire':
                 //     {
                 //         this.activate = function() {
                 //             for (var ball in balls) {
                 //                 balls[ball].fire = true;
                 //             }
                 //         };
-                //         this.fillColor = "#FF00DA";
+                //         this.fillColor = '#FF00DA';
                 //         break;
                 //     }
-            case "Guard":
+            case 'Guard':
                 this.activate = function() {
                     guard = new Block("g", 0, theCanvas.height - 45, 90 , theCanvas);
                     guard.width = theCanvas.width;
@@ -441,13 +487,13 @@ function PowerUp(x, y, kind, theCanvas) {
                         guard = null;
                     }, 15000);
                 };
-                this.fillColor = "#0FCDFF";
-                this.image.src = "Resources/images/Guard.png";
+                this.fillColor = '#0FCDFF';
+                this.image.src = 'Resources/images/Guard.png';
                 break;
 
             default:
                 this.activate = function() {
-                    console.log("I'm a broken powerup!");
+                    console.log('I\'m a broken powerup!');
                 };
                 this.fillColor = 'black';
                 break;
@@ -478,8 +524,6 @@ function PowerUp(x, y, kind, theCanvas) {
     };
 
     this.draw = function(canvasCtx) {
-        canvasCtx.beginPath();
-        canvasCtx.fillStyle = this.fillColor;
         canvasCtx.drawImage(this.image, this.x, this.y, this.width, this.height);
     };
 
@@ -496,8 +540,8 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
     image.src = 'Resources/images/ball.png';
 
     if (!player.sticky) {
-        this.moveSpeedX = (Math.floor(Math.random() * this.mainSpeed*2)) * randomSign();
-        this.moveSpeedY = (this.mainSpeed*2 - Math.abs(this.moveSpeedX)) * randomSign();
+        this.moveSpeedX = (Math.floor(Math.random() * this.mainSpeed * 2)) * randomSign();
+        this.moveSpeedY = (this.mainSpeed * 2 - Math.abs(this.moveSpeedX)) * randomSign();
     } else{
         this.moveSpeedX = 0;
         this.moveSpeedY = 0;
@@ -518,7 +562,7 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
         this.cY += this.moveSpeedY;
         this.checkCollision(i);
     };
-    
+
     this.checkCollision = function(i) {
         this.rightBorder = this.cX + this.rad;
         this.leftBorder = this.cX - this.rad;
@@ -535,7 +579,7 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
         /*Bug : Somethimes the ball can go fast enough as to exit the boundaries of the level, leaving it glitched*/
         if(guard !== null){
             if (this.bottomBorder >= guard.y) {
-                this.moveSpeedY = this.moveSpeedY*-1;
+                this.moveSpeedY = this.moveSpeedY * (-1);
             }
         }
 
@@ -566,6 +610,7 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
                 player.lives -= 1;
                 player.sticky = true;
                 balls[0] = new Ball(player.x + (player.width / 2) - this.rad, (player.y - 7), 7, theCanvas, 5); // Replaces ball that spawns at player location when it's destroyed.
+                player.width = playerWidth;
             }
         }
 
@@ -597,6 +642,16 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
                         
                     if (blockHit) {
                         currentBlock.health -= 1;
+
+                        //Change hard blocks image
+                        if (currentBlock.type === 'd' || currentBlock.type === 't') {
+                            if (currentBlock.health === 2) {
+                                currentBlock.sourceY = 15;
+                            } else if (currentBlock.health === 1) {
+                                currentBlock.sourceY = 30;
+                            }
+                        }
+
                         index = b;
                         blockHit = false;
                     }
@@ -621,6 +676,16 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
 
                     if (blockHit) {
                         currentBlock.health -= 1;
+
+                        //Change hard blocks image
+                        if (currentBlock.type === 'd' || currentBlock.type === 't') {
+                            if (currentBlock.health === 2) {
+                                currentBlock.sourceY = 15;
+                            } else if (currentBlock.health === 1) {
+                                currentBlock.sourceY = 30;
+                            }
+                        }
+
                         index = b;
                         blockHit = false;
                     }
@@ -639,8 +704,8 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
     };
 
     this.changeDirections = function (currentBlock, currentBlockBottomBorder, currentBlockRightBorder) {
-        if (lastHit != currentBlock) {  
-            if (Math.abs(this.moveSpeedY) > Math.abs(this.moveSpeedX)) {                    
+        if (lastHit != currentBlock) {
+            if (Math.abs(this.moveSpeedY) > Math.abs(this.moveSpeedX)) {
                 if (this.topBorder <= currentBlockBottomBorder && this.topBorder >= currentBlock.y &&
                     this.cX >= currentBlock.x && this.cX <= currentBlockRightBorder) { //hit from bellow
 
@@ -669,39 +734,39 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
                     lastHit = currentBlock;
                     return true;
                 }
-        }
-        else if (Math.abs(this.moveSpeedX) > Math.abs(this.moveSpeedY)) {
-            if (this.rightBorder >= currentBlock.x && this.rightBorder <= currentBlockRightBorder &&
-                       this.cY >= currentBlock.y && this.cY <= currentBlockBottomBorder) { //hit from left
-
-                this.moveSpeedX = -this.moveSpeedX;
-                lastHit = currentBlock;
-                return true;
-
             }
-            else if (this.leftBorder <= currentBlockRightBorder && this.leftBorder >= currentBlock.x &&
-                       this.cY >= currentBlock.y && this.cY <= currentBlockBottomBorder) { //hit from right
+            else if (Math.abs(this.moveSpeedX) > Math.abs(this.moveSpeedY)) {
+                if (this.rightBorder >= currentBlock.x && this.rightBorder <= currentBlockRightBorder &&
+                           this.cY >= currentBlock.y && this.cY <= currentBlockBottomBorder) { //hit from left
 
-                this.moveSpeedX = -this.moveSpeedX;
-                lastHit = currentBlock;
-                return true;
+                    this.moveSpeedX = -this.moveSpeedX;
+                    lastHit = currentBlock;
+                    return true;
+
+                }
+                else if (this.leftBorder <= currentBlockRightBorder && this.leftBorder >= currentBlock.x &&
+                           this.cY >= currentBlock.y && this.cY <= currentBlockBottomBorder) { //hit from right
+
+                    this.moveSpeedX = -this.moveSpeedX;
+                    lastHit = currentBlock;
+                    return true;
+                }
+                else if (this.bottomBorder >= currentBlock.y && this.bottomBorder <= currentBlockBottomBorder &&
+                           this.cX >= currentBlock.x && this.cX <= currentBlockRightBorder) { //hit from top
+
+                    this.moveSpeedY = -this.moveSpeedY;
+                    lastHit = currentBlock;
+                    return true;
+
+                } else if (this.topBorder <= currentBlockBottomBorder && this.topBorder >= currentBlock.y &&
+                    this.cX >= currentBlock.x && this.cX <= currentBlockRightBorder) { //hit from bellow
+
+                    this.moveSpeedY = -this.moveSpeedY;
+                    lastHit = currentBlock;
+                    return true;
+
+                }
             }
-            else if (this.bottomBorder >= currentBlock.y && this.bottomBorder <= currentBlockBottomBorder &&
-                       this.cX >= currentBlock.x && this.cX <= currentBlockRightBorder) { //hit from top
-
-                this.moveSpeedY = -this.moveSpeedY;
-                lastHit = currentBlock;
-                return true;
-
-            } else if (this.topBorder <= currentBlockBottomBorder && this.topBorder >= currentBlock.y &&
-                this.cX >= currentBlock.x && this.cX <= currentBlockRightBorder) { //hit from bellow
-
-                this.moveSpeedY = -this.moveSpeedY;
-                lastHit = currentBlock;
-                return true;
-
-            } 
         }
-}
     };
 }

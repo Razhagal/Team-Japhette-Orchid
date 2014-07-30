@@ -1,19 +1,19 @@
 var reader = new XMLHttpRequest();
 var field;
 
-function loadFile(level) {
-    reader.open('get', 'Resources/game-engine/' + level.toString() + '.txt', true);
+function loadFile() {
+    reader.open('get', 'Resources/game-engine/Level-1.txt', true);
     reader.send(null);
 }
-function generateBlocks(level) {
-    loadFile(level);
-    field = reader.responseText;
+
+loadFile();
+
+function generateBlocks() {
     var canvas = document.getElementById('field'),
         ctx = canvas.getContext('2d'),
         blox = [],
         firstQuad = [],
         secondQuad = [],
-        thirdQuad = [],
         tmpBlock;
 
     if (field === '') {
@@ -26,16 +26,19 @@ function generateBlocks(level) {
     for (var letter in field) {
 
         if (field[letter] === 'n') {
-            tmpBlock = new Block('n', width, height, 1, canvas);
+            tmpBlock = new Block('n', width, height, canvas);
             width += canvas.width / 18;
-        } else if (field[letter] === 'p') {  //PowerUp
-            tmpBlock = new Block('p', width, height, 1, canvas);
+        } else if (field[letter] === 'b') {  //Bonus points
+            tmpBlock = new Block('b', width, height, canvas);
             width += canvas.width / 18;
         } else if (field[letter] === 'd') {  //Double
-            tmpBlock = new Block('d', width, height, 2, canvas);
+            tmpBlock = new Block('d', width, height, canvas);
             width += canvas.width / 18;
         } else if (field[letter] === 't') {  //Triple
-            tmpBlock = new Block('t', width, height, 3, canvas);
+            tmpBlock = new Block('t', width, height, canvas);
+            width += canvas.width / 18;
+        } else if (field[letter] === 'l') { //Extra life block
+            tmpBlock = new Block('l', width, height, canvas);
             width += canvas.width / 18;
         } else if (field[letter] === '\u0020') {
             //Current char is a blank space
@@ -55,9 +58,6 @@ function generateBlocks(level) {
         } else if (width > canvas.width / 2) {
             secondQuad.push(tmpBlock);
         }
-
-    //\u0020
-    //\u000A
     }
 
     blox.push(firstQuad);
