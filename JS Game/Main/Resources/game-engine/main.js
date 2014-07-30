@@ -272,6 +272,7 @@ function Block(type, x, y, hardness, theCanvas) {
         if (this.powerUP > Math.random()) {
             powerups.push(new PowerUp(this.x + this.width / 2, this.y - this.height / 2, powerupKinds[Math.floor(Math.random() * powerupKinds.length)], theCanvas));
             console.log(powerups);
+            score += 500;
         }
         score += 100;
     };
