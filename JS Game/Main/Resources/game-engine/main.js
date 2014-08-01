@@ -97,7 +97,7 @@ window.onload = function() {
         startButton.style.top = (theCanvas.height / 1.4 + 10).toString() + 'px';
 
         canvasCtx.fillStyle = '#FFFFFF';
-        canvasCtx.font = '2.2em fnt, Arial';
+        canvasCtx.font = '3.5em Consolas, Arial';
         canvasCtx.textAlign = 'center';
         canvasCtx.fillText(textToDraw, theCanvas.width / 2, theCanvas.height / 8, theCanvas.width);
 
@@ -113,12 +113,12 @@ window.onload = function() {
     }
 
     function scoreView() {
-        canvasCtx.font = '0.8em fnt, Arial';
+        canvasCtx.font = '1em Consolas, Arial';
         canvasCtx.textAlign = 'left';
         canvasCtx.fillStyle = '#fff';
 
-        canvasCtx.drawImage(scoreIcon, theCanvas.width - 170, theCanvas.height - 30);
-        canvasCtx.fillText('Score: ' + Math.round(score), theCanvas.width - 150, theCanvas.height - 17);
+        canvasCtx.drawImage(scoreIcon, theCanvas.width - 150, theCanvas.height - 30);
+        canvasCtx.fillText('Score: ' + Math.round(score), theCanvas.width - 130, theCanvas.height - 17);
     }
 
     function showLives() {
@@ -141,7 +141,7 @@ window.onload = function() {
         startButton.className = 'button';
         startButton.style.top = (theCanvas.height / 1.4 + 10).toString() + 'px';
 
-        canvasCtx.font = '2.2em fnt, Arial';
+        canvasCtx.font = '3.5em Consolas, Arial';
         canvasCtx.textAlign = 'center';
         canvasCtx.fillStyle = '#fff';
 
@@ -169,15 +169,18 @@ window.onload = function() {
         startButton.style.top = (theCanvas.height / 1.4 + 10).toString() + 'px';
 
         canvasCtx.fillStyle = '#FFFFFF';
-        canvasCtx.font = '2.2em fnt, Arial';
+        canvasCtx.font = '3.5em Consolas, Arial';
         canvasCtx.textAlign = 'center';
 
         startButton.innerHTML = 'Next!';
         canvasCtx.fillText(textToDraw, theCanvas.width / 2, theCanvas.height / 8, theCanvas.width);
         startButton.onclick = function () {
             document.body.removeChild(startButton);
-            blocks = generateBlocks('level') + levelNumber.toString();
+			
             player.lives = 3;
+            score = 0;
+            blocks = generateBlocks();
+			
             startGame();
         };
     }
@@ -607,12 +610,12 @@ function Ball(cX, cY, rad, theCanvas, mainSpeed) {
         if(guard !== null){
             if (this.bottomBorder >= guard.y) {
                 this.moveSpeedY = this.moveSpeedY * (-1);
+                this.cY = 0 + this.rad;
             }
         }
 
         if (this.topBorder <= 0) {
             this.moveSpeedY = -this.moveSpeedY; // sets variable to move down 
-            this.cY = 0 + this.rad;
         } else if (this.cX >= player.x && this.cX <= (player.x + player.width) && this.bottomBorder >= player.y && this.bottomBorder <= player.y + player.height) {
             if (player.sticky) {
                 if (player.x >= 0 && player.x + player.width <= theCanvas.width) {

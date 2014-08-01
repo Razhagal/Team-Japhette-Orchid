@@ -1,10 +1,5 @@
-﻿@font-face{
-    font-family: fnt;
-    src: url('../Font/venus-rising-rg.ttf') format('truetype');
-}
-
-body {
-    font-family: fnt, Arial;
+﻿body {
+    font-family: Consolas, Arial, sans-serif;
 }
 
 #field {
@@ -22,7 +17,7 @@ body {
     margin: 0 auto;
     width: 200px;
     height: 40px;
-    font-family: fnt;
+    font-family: Consolas, Arial, sans-serif;
     font-size: 20px;
     color: white;
     background-color: #383960;

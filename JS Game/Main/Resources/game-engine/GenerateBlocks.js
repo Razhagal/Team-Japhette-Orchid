@@ -31,6 +31,9 @@ function generateBlocks() {
         } else if (field[letter] === 'b') {  //Bonus points
             tmpBlock = new Block('b', width, height, canvas);
             width += canvas.width / 18;
+        } else if (field[letter] === 'p') { //Extra life block
+            tmpBlock = new Block('p', width, height, canvas);
+            width += canvas.width / 18;
         } else if (field[letter] === 'd') {  //Double
             tmpBlock = new Block('d', width, height, canvas);
             width += canvas.width / 18;
@@ -39,9 +42,6 @@ function generateBlocks() {
             width += canvas.width / 18;
         } else if (field[letter] === 'l') { //Extra life block
             tmpBlock = new Block('l', width, height, canvas);
-            width += canvas.width / 18;
-        } else if (field[letter] === 'p') { //Extra life block
-            tmpBlock = new Block('p', width, height, canvas);
             width += canvas.width / 18;
         } else if (field[letter] === '\u0020') {
             //Current char is a blank space
